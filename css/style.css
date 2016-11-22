@@ -53,7 +53,7 @@ body, html {
 	    padding: 8px 12px;
 	}
 
-		.ias_message.sent {
+		.ias_message-sent {
 			text-align: right;
 		}
 

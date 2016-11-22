@@ -44,20 +44,25 @@
 
 	<div id="ias_messages">
 
-		<div class="ias_message sent">This is a test message</div>
-		<div class="ias_message receved">Hi, I'm the support provider, and this is my test answer</div>
+		<div class="ias_message ias_message-sent">This is a test message</div>
+		<div class="ias_message ias_message-received">Hi, I'm the support provider, and this is my test answer</div>
 
 	</div>
 
 	<div id="ias_write">
-		<input type="text" />
-		<button>ENVIAR</button>
+		<form id="ias_write-form">
+			<input type="text" />
+			<button type="submit">ENVIAR</button>
+		</form>
 	</div>
 </div>	
 
 	<!-- Firebase -->
 	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
 	<script src="js/firebase.js"></script>
+
+	<!-- Main working -->
+	<script src="js/chat.js"></script>
 
 </body>
 </html>
