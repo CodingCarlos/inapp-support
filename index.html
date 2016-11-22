@@ -30,13 +30,32 @@
 
 	<!-- App Styling -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-	<link rel="stylesheet" href="styles/main.css">
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+<div id="ias">
+
+	<div id="ias_topbar">
+		<div id="ias_topbar-pic"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg"></div>
+		<div id="ias_topbar-text">Support</div>
+		<div id="ias_topbar-close">X</div>
+	</div>
+
+	<div id="ias_messages">
+
+		<div class="ias_message sent">This is a test message</div>
+		<div class="ias_message receved">Hi, I'm the support provider, and this is my test answer</div>
+
+	</div>
+
+	<div id="ias_write">
+		<input type="text" />
+		<button>ENVIAR</button>
+	</div>
+</div>	
 
 	<!-- Firebase -->
-
 	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
 	<script src="js/firebase.js"></script>
 

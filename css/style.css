@@ -1,0 +1,96 @@
+body, html {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%
+}
+
+#ias {
+	height: 100%;
+	width: 100%
+}
+
+#ias_topbar {
+	background-color: #ff9800;
+	height: 64px;
+	width: 100%;
+}
+
+	#ias_topbar #ias_topbar-pic {
+		padding: 8px;
+		width: 48px;
+		height: 48px;
+		float: left;
+	}
+		#ias_topbar #ias_topbar-pic img {
+			height: 100%;
+			border-radius: 50%;
+		}
+
+	#ias_topbar #ias_topbar-text {
+		float: left;
+		margin-left: 8px; 
+		margin-top: 18px;
+		font-size: 24px;
+		color: #fff;
+	}
+
+	#ias_topbar #ias_topbar-close {
+		float: right;
+		margin-top: 18px;
+		font-size: 24px;
+		margin-right: 16px;
+		color: #fff;
+	}
+
+
+#ias_messages {
+	height: calc(100% - 112px)
+}
+
+	.ias_message {
+	    margin: 4px 8px;
+	    padding: 8px 12px;
+	}
+
+		.ias_message.sent {
+			text-align: right;
+		}
+
+
+#ias_write {
+	background-color: #fff;
+	/*border-top: 1px solid lightgrey;*/
+	height: 48px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+	#ias_write input {
+		margin: 0 8px;
+	    border: 0;
+	    border-bottom: 1px solid #ff9800;
+	    width: 85%;
+	    width: calc(100% - 104px);
+	    padding: 4px 8px 4px 16px;
+	    height: 31px;
+	}
+
+	#ias_write button {
+		position: fixed;
+		right: 16px;
+		bottom: 4px;
+		border-radius: 50%;
+	    font-size: 24px;
+	    height: 42px;
+	    margin: auto;
+	    min-width: 42px;
+	    width: 42px;
+	    padding: 0;
+	    overflow: hidden;
+	    background: rgba(158,158,158,.2);
+	    box-shadow: 0 1px 1.5px 0 rgba(0,0,0,.12),0 1px 1px 0 rgba(0,0,0,.24);
+	    line-height: normal;
+	}
