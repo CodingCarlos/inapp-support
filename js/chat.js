@@ -1,16 +1,22 @@
 
 function IASChat(config) {
 
-	var uid = config.uid;
-	var username = config.username;
+	// ALSO ADD CHAT SETTINGS TO CONFIG
 
+	var uid = config.uid;
+	var cid = config.cid || config.uid;
+	
+	// Prepare interface
+	printInterface();
+
+	// Prepare listeners
 	var show = document.getElementById('ias-show');
 	var ias = document.getElementById('ias');
 	var close = document.getElementById('ias_topbar-close');
 	var form = document.getElementById('ias_write-form');
 	var messages = document.getElementById('ias_messages');
 
-	var messagesRef = firebase.database().ref('messages/' + uid);
+	var messagesRef = firebase.database().ref('messages/' + cid);
 
 	// Listen event submit
 	show.addEventListener('click', showIAS.bind(this));
@@ -19,6 +25,15 @@ function IASChat(config) {
 
 	// Listen message changes
 	messagesRef.on('child_added', receiveMessage);
+
+
+	/* ### Interface ### */
+
+	function printInterface(text, received) {
+		// Compressed version of chat.html turned to string
+		var ias = '<div id="ias"><div id="ias_topbar"><div id="ias_topbar-pic"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg"></div><div id="ias_topbar-text">Support</div><div id="ias_topbar-close">X</div></div><div id="ias_messages"></div><div id="ias_write"><form id="ias_write-form"><input type="text" /><button type="submit">SEND</button></form></div></div>';
+	  	document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
+	}
 
 
 	/* #### Messages #### */
@@ -61,10 +76,10 @@ function IASChat(config) {
 	}
 
 	function pushMessage(text) {
-		firebase.database().ref('messages/' + uid).push({
+		firebase.database().ref('messages/' + cid).push({
 			uid: uid,
-			username: username,
-			text: text
+			text: text,
+			timestamp: new Date().getTime()
 		});
 	}
 
