@@ -81,8 +81,6 @@ function IASChat() {
 	function showIAS(e) {
 		e.preventDefault();
 
-		console.log('show');
-
 		if (ias.classList) {
 			ias.classList.remove('hidden');
 		} else {
