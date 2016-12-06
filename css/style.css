@@ -1,14 +1,23 @@
+/*
 body, html {
 	margin: 0;
 	padding: 0;
 	height: 100%;
 	width: 100%
 }
+*/
 
 #ias {
+	position: fixed;
+    top: 0;
+    left: 0;
 	height: 100%;
-	width: 100%
+	width: 100%;
 }
+
+	#ias.hidden {
+		display: none;
+	}
 
 #ias_topbar {
 	background-color: #ff9800;
@@ -45,7 +54,8 @@ body, html {
 
 
 #ias_messages {
-	height: calc(100% - 112px)
+	background: #fff;
+	height: calc(100% - 112px);
 }
 
 	.ias_message {
