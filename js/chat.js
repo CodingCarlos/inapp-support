@@ -1,6 +1,8 @@
-// (function(){ 
 
-function IASChat() {
+function IASChat(uid, username) {
+
+	var uid = uid;
+	var username = username;
 
 	var show = document.getElementById('ias-show');
 	var ias = document.getElementById('ias');
@@ -59,7 +61,8 @@ function IASChat() {
 
 	function pushMessage(text) {
 		firebase.database().ref('messages').push({
-			username: 'paco',
+			uid: uid,
+			username: username,
 			text: text
 		});
 	}
@@ -68,7 +71,7 @@ function IASChat() {
 		var key = data.key;
 		var message = data.val();
 
-		if(message.username == 'paco') {
+		if(message.uid === uid) {
 			printMessage(message.text);
 		} else {
 			printMessage(message.text, true);
@@ -99,10 +102,3 @@ function IASChat() {
 	}
 }
 
-
-// })();
-
-
-window.onload = function() {
-  window.IASChat = new IASChat();
-};
