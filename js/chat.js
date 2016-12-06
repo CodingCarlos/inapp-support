@@ -5,6 +5,8 @@ function IASChat(config) {
 
 	var uid = config.uid;
 	var cid = config.cid || config.uid;
+	var topbarBg = config.topbarBg || '#ff9800';
+	var topbarColor = config.topbarColor || '#fff';
 	
 	// Prepare interface
 	printInterface();
