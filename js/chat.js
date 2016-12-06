@@ -1,15 +1,16 @@
 
-function IASChat(uid, username) {
+function IASChat(config) {
 
-	var uid = uid;
-	var username = username;
+	var uid = config.uid;
+	var username = config.username;
 
 	var show = document.getElementById('ias-show');
 	var ias = document.getElementById('ias');
 	var close = document.getElementById('ias_topbar-close');
 	var form = document.getElementById('ias_write-form');
 	var messages = document.getElementById('ias_messages');
-	var messagesRef = firebase.database().ref('messages');
+
+	var messagesRef = firebase.database().ref('messages/' + uid);
 
 	// Listen event submit
 	show.addEventListener('click', showIAS.bind(this));
@@ -60,7 +61,7 @@ function IASChat(uid, username) {
 	}
 
 	function pushMessage(text) {
-		firebase.database().ref('messages').push({
+		firebase.database().ref('messages/' + uid).push({
 			uid: uid,
 			username: username,
 			text: text

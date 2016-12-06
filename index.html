@@ -74,7 +74,10 @@
 	<!-- Main working -->
 	<script type="text/javascript">	
 	window.onload = function() {
-		window.IASChat = new IASChat(1234, 'paco');
+		window.IASChat = new IASChat({
+			uid: 1234, 
+			username: 'paco'
+		});
 	};
 	</script>	
 
