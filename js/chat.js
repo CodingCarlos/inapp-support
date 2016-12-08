@@ -4,6 +4,7 @@ function IASChat(config) {
 	// ALSO ADD CHAT SETTINGS TO CONFIG
 	var cid;
 	var uid;
+	var name;
 	var button = config.button || false;
 	var topbarBg = config.topbarBg || '#ff9800';
 	var topbarColor = config.topbarColor || '#fff';
@@ -37,6 +38,7 @@ function IASChat(config) {
 	function setUser(config) {
 		uid = config.uid;
 		cid = config.cid || config.uid;
+		name = config.name || '';
 
 		clearMessages();
 
@@ -137,7 +139,7 @@ function IASChat(config) {
 		var key = data.key;
 		var message = data.val();
 
-		if(message.uid === uid) {
+		if(message.uid == uid) {
 			printMessage(message.text);
 		} else {
 			printMessage(message.text, true);
