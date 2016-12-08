@@ -40,9 +40,22 @@
 
 <div id="ias-show">OPEN CHAT</div>
 
+<div id="unassigned-chat"></div>
+<h3>Unassigned Users:</h3>
+<ul class="users-chat">
+	<li><a data-uid="1234" data-cid="4321" >User 1</a></li>
+	<li><a data-uid="1235" data-cid="4321" >User 2</a></li>
+</ul>
+<div id="assigned-chat"></div>
+<h3>Your Users:</h3>
+<ul class="users-chat">
+	<li><a data-uid="1234" data-cid="4321" >User 1</a></li>
+	<li><a data-uid="1235" data-cid="4321" >User 2</a></li>
+</ul>
+<!--
 <div onclick="window.IASChat.setUser({cid: 1234, uid: 4321}); window.IASChat.open(event);">User 1</div>
 <div onclick="window.IASChat.setUser({cid: 1235, uid: 4321}); window.IASChat.open(event);">User 2</div>
-
+-->
 
 	<!-- Firebase -->
 	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
@@ -50,6 +63,7 @@
 
 	<!-- Include IASChat -->
 	<script src="js/chat.js"></script>
+	<script src="js/provider.js"></script>
 	<!-- <script src="js/provider.js"></script> -->
 
 	<!-- Main working -->
