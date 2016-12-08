@@ -110,10 +110,26 @@ function IASChat(config) {
 	}
 
 	function pushMessage(text) {
-		firebase.database().ref('messages/' + cid).push({
+		var msg = {
 			uid: uid,
 			text: text,
 			timestamp: new Date().getTime()
+		};
+
+		firebase.database().ref('messages/' + cid).push(msg);
+
+		firebase.database().ref('users/' + cid).once('value').then(function(snapshot) {		
+			if(!snapshot.val()) {
+				// Add user
+				firebase.database().ref('users/' + cid).set({
+					name: name,
+					isSupporter: false,
+					supporter: -1,
+					lastMessage: msg
+				});
+			} else {
+				firebase.database().ref('users/' + cid).update({lastMessage: msg});
+			}
 		});
 	}
 
@@ -127,7 +143,6 @@ function IASChat(config) {
 			printMessage(message.text, true);
 		}
 	}
-
 
 	/* #### Visivility #### */
 
