@@ -2,12 +2,11 @@
 function IASChat(config) {
 
 	// ALSO ADD CHAT SETTINGS TO CONFIG
-
-	var uid = config.uid;
-	var cid = config.cid || config.uid;
+	var cid;
+	var uid;
 	var topbarBg = config.topbarBg || '#ff9800';
 	var topbarColor = config.topbarColor || '#fff';
-	
+
 	// Prepare interface
 	printInterface();
 
@@ -18,15 +17,35 @@ function IASChat(config) {
 	var form = document.getElementById('ias_write-form');
 	var messages = document.getElementById('ias_messages');
 
-	var messagesRef = firebase.database().ref('messages/' + cid);
+	var messagesRef;
 
 	// Listen event submit
 	show.addEventListener('click', showIAS.bind(this));
 	close.addEventListener('click', hideIAS.bind(this));
 	form.addEventListener('submit', saveMessage.bind(this));
+	
+	// Set user
+	setUser(config);
 
-	// Listen message changes
-	messagesRef.on('child_added', receiveMessage);
+	return {
+		setUser: setUser,
+		open: showIAS
+	}
+
+	/**/
+	function setUser(config) {
+		uid = config.uid;
+		cid = config.cid || config.uid;
+		console.log(cid);
+
+		clearMessages();
+
+		if(typeof(messagesRef) !== 'undefined') {
+			messagesRef.off();
+		}
+		messagesRef = firebase.database().ref('messages/' + cid);
+		messagesRef.on('child_added', receiveMessage);
+	}
 
 
 	/* ### Interface ### */
@@ -71,6 +90,13 @@ function IASChat(config) {
 			message.innerHTML = text;
 
 		messages.appendChild(message)
+	}
+
+	function clearMessages() {
+
+		while (messages.firstChild) {
+			messages.removeChild(messages.firstChild);
+		}
 	}
 
 	function clearForm() {
