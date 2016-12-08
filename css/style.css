@@ -13,6 +13,7 @@ body, html {
     left: 0;
 	height: 100%;
 	width: 100%;
+	z-index: 999;
 }
 
 	#ias.hidden {
@@ -45,11 +46,11 @@ body, html {
 	}
 
 	#ias_topbar #ias_topbar-close {
+		color: #fff;
 		float: right;
-		margin-top: 18px;
 		font-size: 24px;
 		margin-right: 16px;
-		color: #fff;
+		margin-top: 14px;
 	}
 
 
@@ -89,6 +90,8 @@ body, html {
 	}
 
 	#ias_write button {
+    	background-color: #fff;
+		border: none;
 		position: fixed;
 		right: 16px;
 		bottom: 4px;
@@ -100,7 +103,21 @@ body, html {
 	    width: 42px;
 	    padding: 0;
 	    overflow: hidden;
-	    background: rgba(158,158,158,.2);
-	    box-shadow: 0 1px 1.5px 0 rgba(0,0,0,.12),0 1px 1px 0 rgba(0,0,0,.24);
 	    line-height: normal;
 	}
+		#ias_write button img {
+			width: 70%;
+			padding: 6px 4px;
+		}
+
+#ias-show {
+	background-color: #ff9800;
+	border-radius: 50%;
+	bottom: 16px;
+	box-sizing: border-box;
+	height: 48px;
+	padding: 5px 6px;
+	position: fixed;
+	right: 16px;
+	width: 48px;
+}

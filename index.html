@@ -36,7 +36,7 @@
 
 	<h1>User side support</h1>
 
-	<div id="ias-show">OPEN CHAT</div>
+	<!-- <div id="ias-show">OPEN CHAT</div> -->
 
 	<!-- Firebase -->
 	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
@@ -50,7 +50,8 @@
 	window.onload = function() {
 		window.IASChat = new IASChat({
 			uid: 1234, 
-			username: 'paco'
+			username: 'paco',
+			button: true
 		});
 	};
 	</script>	

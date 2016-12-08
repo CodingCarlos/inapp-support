@@ -4,6 +4,7 @@ function IASChat(config) {
 	// ALSO ADD CHAT SETTINGS TO CONFIG
 	var cid;
 	var uid;
+	var button = config.button || false;
 	var topbarBg = config.topbarBg || '#ff9800';
 	var topbarColor = config.topbarColor || '#fff';
 
@@ -36,7 +37,6 @@ function IASChat(config) {
 	function setUser(config) {
 		uid = config.uid;
 		cid = config.cid || config.uid;
-		console.log(cid);
 
 		clearMessages();
 
@@ -52,7 +52,13 @@ function IASChat(config) {
 
 	function printInterface(text, received) {
 		// Compressed version of chat.html turned to string
-		var ias = '<div id="ias"><div id="ias_topbar"><div id="ias_topbar-pic"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg"></div><div id="ias_topbar-text">Support</div><div id="ias_topbar-close">X</div></div><div id="ias_messages"></div><div id="ias_write"><form id="ias_write-form"><input type="text" /><button type="submit">SEND</button></form></div></div>';
+		var ias = '<div id="ias" class="hidden"><div id="ias_topbar"><div id="ias_topbar-pic"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg"></div><div id="ias_topbar-text">Support</div><div id="ias_topbar-close"><img src="img/close.png"></div></div><div id="ias_messages"></div><div id="ias_write"><form id="ias_write-form"><input type="text" /><button type="submit"><img src="img/send.png"></button></form></div></div>';
+	  	
+		// If shall show button, add it to interface
+		if(button) {
+			ias += '<div id="ias-show"><img src="img/help.png"></div>';
+		}
+
 	  	document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
 	}
 
