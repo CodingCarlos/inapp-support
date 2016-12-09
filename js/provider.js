@@ -16,30 +16,30 @@ function IASChatProvider(config) {
 
 	// First load
 	firebase.database().ref('users')
-		.orderByChild('lastmessage/reverseTimestamp')
+		.orderByChild('lastMessage/reverseTimestamp')
 		.on('value', function(snapshot) {
-			addChats(snapshot)
+			addUserList(snapshot)
 		});
 
 	// On change
 	firebase.database().ref('users')
-		.orderByChild('lastmessage/reverseTimestamp')
+		.orderByChild('lastMessage/reverseTimestamp')
 		.on('child_changed', function(snapshot) {
-			addChats();
+			addUserList(snapshot);
 		});
 
 
 	/* ### Print functions ### */
 
-	function addChats(snapshot) {
+	function addUserList(snapshot) {
+		clearUserList();
 		snapshot.forEach(function(child) {
-
 			var data = child.val();
 				data.uid = child.key;
 			
 			addUserToList(data);
-
-		}.bind(this));
+		});
+		// }.bind(this));
 	}
 
 	function addUserToList(data) {
@@ -49,6 +49,12 @@ function IASChatProvider(config) {
 
 		usersChat[0].appendChild(user);
 		user.addEventListener('click', usersChatManagement, false);
+	}
+
+	function clearUserList() {
+		while (usersChat[0].firstChild) {
+			usersChat[0].removeChild(usersChat[0].firstChild);
+		}
 	}
 
 	/* ### Open chats ### */

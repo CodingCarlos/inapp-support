@@ -107,7 +107,6 @@ function IASChat(config) {
 	}
 
 	function clearMessages() {
-
 		while (messages.firstChild) {
 			messages.removeChild(messages.firstChild);
 		}
