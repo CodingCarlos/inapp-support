@@ -54,7 +54,6 @@ function IASChat(config) {
 	function generateUserData(cid){
 		var dummyData = true
 		if(dummyData){
-			console.log("de nuevo por aqui...")
 	        var xmlHttp = new XMLHttpRequest();
 	
 	        xmlHttp.onreadystatechange = function() {
@@ -178,9 +177,7 @@ function IASChat(config) {
 				});
 			} else {
 				firebase.database().ref('users/' + cid).update({lastMessage: msg});
-				console.log('snapshot.val().profile', snapshot.val().profile)
 				if(!snapshot.val().profile) {
-					console.log("paseeee")
 					generateUserData(cid)
 				}
 			}
