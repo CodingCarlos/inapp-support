@@ -36,10 +36,13 @@ function IASChatProvider(config) {
 	function addUserList(snapshot) {
 		clearUserList();
 		snapshot.forEach(function(child) {
+
 			var data = child.val();
 				data.uid = child.key;
 			
-			addUserToList(data);
+			if(data.isSupporter == false) {
+				addUserToList(data);
+			}
 		});
 		// }.bind(this));
 	}
