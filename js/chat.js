@@ -38,7 +38,8 @@ function IASChat(config) {
 		open: showIAS
 	}
 
-	/**/
+	/* ### Set chat properties ### */
+
 	function setUser(config) {
 		uid = config.uid;
 		cid = config.cid || config.uid;
@@ -59,13 +60,13 @@ function IASChat(config) {
 	function printInterface(text, received) {
 		// Compressed version of chat.html turned to string
 		var ias = '<div id="ias" class="hidden"><div id="ias_topbar"><div id="ias_topbar-pic"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg"></div><div id="ias_topbar-text">Support</div><div id="ias_topbar-close"><img src="img/close.png"></div></div><div id="ias_messages"></div><div id="ias_write"><form id="ias_write-form"><input type="text" /><button type="submit"><img src="img/send.png"></button></form></div></div>';
-	  	
+		
 		// If shall show button, add it to interface
 		if(button) {
 			ias += '<div id="ias-show"><img src="img/help.png"></div>';
 		}
 
-	  	document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
+		document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
 	}
 
 
@@ -97,11 +98,12 @@ function IASChat(config) {
 			classes += ' ias_message-sent';
 		}
 
-	  	var message = document.createElement('div');
+		var message = document.createElement('div');
 			message.className = classes;
 			message.innerHTML = text;
 
-		messages.appendChild(message)
+		messages.appendChild(message);
+		scrollDown();
 	}
 
 	function clearMessages() {
@@ -149,6 +151,10 @@ function IASChat(config) {
 		} else {
 			printMessage(message.text, true);
 		}
+	}
+
+	function scrollDown() {
+		messages.scrollTop = messages.scrollHeight;
 	}
 
 	/* #### Visivility #### */
