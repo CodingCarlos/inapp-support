@@ -17,17 +17,26 @@
     "customer",
     "support"
   ],
-  "author": { 
-    "name" : "Carlos Hernandez",
-    "url" : "https://github.com/CodingCarlos"
+  "author": {
+    "name": "Carlos Hernandez",
+    "url": "https://github.com/CodingCarlos"
   },
-  "contributors": [{ 
-    "name" : "Ulises Gascón",
-    "url" : "https://github.com/ulisesGascon"
-  }]
+  "contributors": [
+    {
+      "name": "Ulises Gascón",
+      "url": "https://github.com/ulisesGascon"
+    }
+  ],
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/CodingCarlos/inapp-support/issues"
   },
-  "homepage": "https://github.com/CodingCarlos/inapp-support#readme"
+  "homepage": "https://github.com/CodingCarlos/inapp-support#readme",
+  "devDependencies": {
+    "browser-sync": "^2.18.2",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-debug": "^3.0.0",
+    "gulp-ejs": "^2.2.1"
+  }
 }
