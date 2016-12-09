@@ -33,6 +33,13 @@ function IASChat(config) {
 	// Set user
 	setUser(config);
 
+	// Check url hash visibility
+	if(visibilityUrlHash() === true) {
+		showIAS();
+	} else {
+		hideIAS();
+	}
+
 	return {
 		setUser: setUser,
 		open: showIAS
@@ -73,7 +80,9 @@ function IASChat(config) {
 	/* #### Messages #### */
 
 	function saveMessage(e) {
-		e.preventDefault();
+		if(typeof(e) !== 'undefined') {
+			e.preventDefault();
+		}
 
 		var text = e.srcElement.children[0].value
 
@@ -162,22 +171,66 @@ function IASChat(config) {
 	/* #### Visivility #### */
 
 	function showIAS(e) {
-		e.preventDefault();
+		if(typeof(e) !== 'undefined') {
+			e.preventDefault();
+		}
 
 		if (ias.classList) {
 			ias.classList.remove('hidden');
 		} else {
 			ias.className = ias.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
 		}
+
+		// Also set url hash to true;
+		addUrlHash();
 	}
 
 	function hideIAS(e) {
-		e.preventDefault();
+		if(typeof(e) !== 'undefined') {
+			e.preventDefault();
+		}
 		
 		if (ias.classList) {
 			ias.classList.add('hidden');
 		} else {
 			ias.className += ' ' + 'hidden';
+		}
+
+		// Also remove url hash to true;
+		remUrlHash();
+	}
+
+	/* ### URL Hash ### */
+
+	function visibilityUrlHash() {
+
+		var ret = false;
+		if(window.location.hash.indexOf('ias=true') !== -1) {
+			ret = true;
+		}
+
+		return ret;
+	}
+
+	function addUrlHash() {
+		if(!visibilityUrlHash()) {
+			if(window.location.hash) {
+				if(window.location.hash.indexOf('ias=true') === -1) {
+					window.location.hash += '&ias=true'; 
+				}
+			} else {
+				window.location.hash += '#ias=true'; 
+			}
+		}
+	}
+
+	function remUrlHash() {
+		if(window.location.hash) {
+			if(window.location.hash.indexOf('&ias=true') !== -1) {
+				window.location.hash = window.location.hash.replace('&ias=true', ''); 
+			} else if(window.location.hash.indexOf('#ias=true') !== -1) {
+				window.location.hash = window.location.hash.replace('ias=true', ''); 
+			}
 		}
 	}
 }
