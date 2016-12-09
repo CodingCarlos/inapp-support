@@ -22,7 +22,11 @@ function IASChat(config) {
 	var messagesRef;
 
 	// Listen event submit
-	show.addEventListener('click', showIAS.bind(this));
+	if(show) {
+		show.addEventListener('click', showIAS.bind(this));
+	} else if(button) {
+		console.warn('Coud not initializate listener for the button to open chat.');
+	}
 	close.addEventListener('click', hideIAS.bind(this));
 	form.addEventListener('submit', saveMessage.bind(this));
 	
@@ -115,7 +119,8 @@ function IASChat(config) {
 		var msg = {
 			uid: uid,
 			text: text,
-			timestamp: new Date().getTime()
+			timestamp: new Date().getTime(),
+			reverseTimestamp: 0 - Number(new Date().getTime())
 		};
 
 		firebase.database().ref('messages/' + cid).push(msg);
