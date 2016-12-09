@@ -36,26 +36,20 @@
 
 <h1>Support side chat</h1>
 
-<ul id="ias-list"></ul>
-
-<div id="ias-show">OPEN CHAT</div>
-
-<div id="unassigned-chat"></div>
-<h3>Unassigned Users:</h3>
-<ul class="users-chat">
-	<li><a data-uid="1234" data-cid="4321" >User 1</a></li>
-	<li><a data-uid="1235" data-cid="4321" >User 2</a></li>
-</ul>
-<div id="assigned-chat"></div>
-<h3>Your Users:</h3>
-<ul class="users-chat">
-	<li><a data-uid="1234" data-cid="4321" >User 1</a></li>
-	<li><a data-uid="1235" data-cid="4321" >User 2</a></li>
-</ul>
-<!--
-<div onclick="window.IASChat.setUser({cid: 1234, uid: 4321}); window.IASChat.open(event);">User 1</div>
-<div onclick="window.IASChat.setUser({cid: 1235, uid: 4321}); window.IASChat.open(event);">User 2</div>
+<!-- 
+<div id="unassigned-chat">
+	<h3>Unassigned Users:</h3>
+	<ul class="users-chat">
+		<li><a data-uid="4321" data-cid="1234" >User 1</a></li>
+		<li><a data-uid="4321" data-cid="1235" >User 2</a></li>
+	</ul>
+</div> 
 -->
+
+<!-- <div id="assigned-chat"> -->
+	<h3>Your Users:</h3>
+	<ul class="users-chat"></ul>
+<!-- </div> -->
 
 	<!-- Firebase -->
 	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
@@ -69,11 +63,9 @@
 	<!-- Main working -->
 	<script type="text/javascript">	
 	window.onload = function() {
-		// window.IASChatProvider = new IASChatProvider({
-		window.IASChat = new IASChat({
-			cid: 1234, 
+		window.IASChatProvider = new IASChatProvider({
 			uid: 4321, 
-			username: 'support'
+			name: 'support'
 		});
 	};
 	</script>	
