@@ -21,13 +21,6 @@ function IASChatProvider(config) {
 			addUserList(snapshot)
 		});
 
-	// On change
-	firebase.database().ref('users')
-		.orderByChild('lastMessage/reverseTimestamp')
-		.on('child_changed', function(snapshot) {
-			addUserList(snapshot);
-		});
-
 
 	/* ### Print functions ### */
 
