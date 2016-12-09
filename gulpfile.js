@@ -2,6 +2,11 @@ var gulp = require('gulp'),
 debug = require('gulp-debug'),
 clean = require('gulp-clean'),
 ejs = require('gulp-ejs'),
+concat = require('gulp-concat'),
+sourcemaps = require('gulp-sourcemaps'),
+uglify = require('gulp-uglify'),
+rename = require('gulp-rename'),
+runSequence = require('run-sequence'),
 templateHTML = require('./template/data'),
 browserSync = require('browser-sync').create();
  
@@ -34,3 +39,20 @@ gulp.task('dist-img', function(){
 gulp.task('move-to-dis', ['dist-html', 'dist-css', 'dist-img'])
 
 gulp.task('default', ['move-to-dis','render']);
+
+gulp.task('move-to-dis', function(callback){
+    runSequence(
+        'dist-img',
+        'dist-html',
+        'dist-css',
+        callback
+    );
+})
+
+gulp.task('default', function(callback){
+    runSequence(
+        'move-to-dis',
+        'render',
+        callback
+    );
+})
