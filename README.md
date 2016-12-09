@@ -57,4 +57,4 @@ Yes, I shall work on this.
 
   
 ## Responsiveness
-Nope, right now is not desktop/tablet responsive, just mobile, but I'm doing my best to add larger screnn support. 
+Nope, right now is not desktop/tablet responsive, just mobile, but I'm doing my best to add larger screen support. 
