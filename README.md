@@ -1,3 +1,8 @@
+![shieldsIO](https://img.shields.io/github/issues/CodingCarlos/inapp-support.svg)
+![shieldsIO](https://img.shields.io/github/release/CodingCarlos/inapp-support.svg)
+![shieldsIO](https://img.shields.io/crates/CodingCarlos/inapp-support.svg)
+![shieldsIO](https://img.shields.io/david/CodingCarlos/inapp-support.svg)
+
 **WARNING**: This is not a stable version. We are currently developing things, and it may have heavy security problems, have parts not finished, have parts broken, or crash unexpectedly. I do not recommend you to use it in production yet.
 
 # inapp-support
