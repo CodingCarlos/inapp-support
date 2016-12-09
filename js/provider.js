@@ -10,6 +10,8 @@ function IASChatProvider(config) {
 		button: false
 	});
 
+	setSupportUser();
+
 	var usersChat = document.getElementsByClassName("users-chat");
 
 	/* ### Load data ### */
@@ -57,7 +59,9 @@ function IASChatProvider(config) {
 		}
 	}
 
+
 	/* ### Open chats ### */
+
 	function usersChatManagement(event) {
 	    var event = event || window.event;
 	    var element = event.target || event.srcElement;
@@ -68,4 +72,31 @@ function IASChatProvider(config) {
 	    }); 
 	    chat.open(event);
 	};
+
+
+	/* ### Set functions ### */
+
+	function setSupportUser() {
+		firebase.database().ref('users/' + uid).once('value').then(function(snapshot) {		
+			if(!snapshot.val()) {
+				// Add user
+				firebase.database().ref('users/' + uid).set({
+					name: name,
+					isSupporter: true,
+					supporter: -1,
+					lastMessage: {
+						timestamp: new Date().getTime(),
+						reverseTimestamp: 0 - Number(new Date().getTime())
+					}
+				});
+			} else {
+				firebase.database().ref('users/' + uid).update({
+					lastMessage: {
+						timestamp: new Date().getTime(),
+						reverseTimestamp: 0 - Number(new Date().getTime())
+					}
+				});
+			}
+		});
+	}
 }
