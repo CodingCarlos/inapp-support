@@ -12,12 +12,17 @@ browserSync = require('browser-sync').create();
  
  
 gulp.task('render', function(){
-    gulp.src("./js/*.js")
-        .pipe(debug({title: 'Render Task:'}))
-        .pipe(ejs({data: templateHTML}))
-        .pipe(gulp.dest("./dist/js"));
-})
 
+    var files = ['chat', 'provider'];
+
+    files.forEach(function(name) {
+        gulp.src("./js/" + name + ".js")
+            .pipe(debug({title: 'Render Task:'}))
+            .pipe(ejs({data: templateHTML}))
+            .pipe(gulp.dest("./dist"));
+    })
+})
+/*
 gulp.task('dist-html', function(){
     gulp.src("./*.html")
         .pipe(debug({title: 'Move to Dist - HTML:'}))
@@ -48,10 +53,10 @@ gulp.task('move-to-dis', function(callback){
         callback
     );
 })
-
+*/
 gulp.task('default', function(callback){
     runSequence(
-        'move-to-dis',
+        //'move-to-dis',
         'render',
         callback
     );

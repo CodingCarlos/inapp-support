@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html>
 <head>
@@ -33,38 +34,22 @@
 </head>
 <body>
 
-<h1>Support side chat</h1>
-
-<!-- 
-<div id="unassigned-chat">
-	<h3>Unassigned Users:</h3>
-	<ul class="users-chat">
-		<li><a data-uid="4321" data-cid="1234" >User 1</a></li>
-		<li><a data-uid="4321" data-cid="1235" >User 2</a></li>
-	</ul>
-</div> 
--->
-
-<!-- <div id="assigned-chat"> -->
-	<h3>Your Users:</h3>
-	<ul class="users-chat"></ul>
-<!-- </div> -->
+	<h1>User side support</h1>
 
 	<!-- Firebase -->
 	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
-	<script src="js/firebase.js"></script>
+	<script src="../js/firebase.js"></script>
 
 	<!-- Include IASChat -->
-	<script src="js/chat.js"></script>
-	<script src="js/provider.js"></script>
-	<!-- <script src="js/provider.js"></script> -->
+	<script src="../dist/chat.js"></script>
 
 	<!-- Main working -->
 	<script type="text/javascript">	
 	window.onload = function() {
-		window.IASChatProvider = new IASChatProvider({
-			uid: 4321, 
-			name: 'support'
+		window.IASChat = new IASChat({
+			uid: 1235, 
+			name: 'santos',
+			button: true
 		});
 	};
 	</script>	
