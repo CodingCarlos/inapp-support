@@ -43,18 +43,30 @@ function IASChatProvider(config) {
 	}
 
 	function addUserToList(data) {
+
+		var supporter = data.supporter.uid || data.supporter;
+
 		var user = document.createElement('li');
 			user.setAttribute("data-cid", data.uid);
-			user.setAttribute("data-supporter", data.supporter.uid || data.supporter);
+			user.setAttribute("data-supporter", supporter);
 			user.innerHTML = data.name;
 
-		usersChat[0].appendChild(user);
 		user.addEventListener('click', usersChatManagement, false);
+
+		if(supporter == '-1') {
+			usersChat[0].appendChild(user);
+		} else if(supporter == uid) {
+			usersChat[1].appendChild(user);
+		}
+
 	}
 
 	function clearUserList() {
 		while (usersChat[0].firstChild) {
 			usersChat[0].removeChild(usersChat[0].firstChild);
+		}
+		while (usersChat[1].firstChild) {
+			usersChat[1].removeChild(usersChat[1].firstChild);
 		}
 	}
 
