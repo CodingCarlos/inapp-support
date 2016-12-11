@@ -14,6 +14,7 @@ function IASChatProvider(config) {
 	setSupportUser();
 
 	var usersChat = document.getElementsByClassName("users-chat");
+	var unassignedChat = document.getElementById("unassigned-chat");
 	var form = document.getElementById('ias_write-form');
 
 	/* ### Load data ### */
@@ -39,6 +40,12 @@ function IASChatProvider(config) {
 				addUserToList(data);
 			}
 		});
+
+		if(usersChat[0].childElementCount == 0) {
+			unassignedChat.style.display = 'none';
+		} else {
+			unassignedChat.style.display = 'block';
+		}
 		// }.bind(this));
 	}
 
