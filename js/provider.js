@@ -7,10 +7,14 @@ function IASChatProvider(config) {
 		name: name,
 		button: false
 	});
+	var cid;
+
+	var setSupporterBind = setSupporter.bind(this);
 
 	setSupportUser();
 
 	var usersChat = document.getElementsByClassName("users-chat");
+	var form = document.getElementById('ias_write-form');
 
 	/* ### Load data ### */
 
@@ -41,6 +45,7 @@ function IASChatProvider(config) {
 	function addUserToList(data) {
 		var user = document.createElement('li');
 			user.setAttribute("data-cid", data.uid);
+			user.setAttribute("data-supporter", data.supporter.uid || data.supporter);
 			user.innerHTML = data.name;
 
 		usersChat[0].appendChild(user);
@@ -60,8 +65,16 @@ function IASChatProvider(config) {
 	    var event = event || window.event;
 	    var element = event.target || event.srcElement;
 
+		form.removeEventListener('submit', setSupporterBind);
+
+	    if(element.getAttribute("data-supporter") == '-1') {
+			form.addEventListener('submit', setSupporterBind);
+	    }
+
+	    cid = element.getAttribute("data-cid");
+
 	    chat.setUser({
-	        cid: element.getAttribute("data-cid"), 
+	        cid: cid, 
 	        uid: uid
 	    }); 
 	    chat.open(event);
@@ -90,6 +103,16 @@ function IASChatProvider(config) {
 						reverseTimestamp: 0 - Number(new Date().getTime())
 					}
 				});
+			}
+		});
+	}
+
+	function setSupporter() {		
+		form.removeEventListener('submit', setSupporterBind);
+		firebase.database().ref('users/' + cid).update({
+			supporter: {
+				uid: uid,
+				name: name
 			}
 		});
 	}
