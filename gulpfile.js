@@ -9,18 +9,13 @@ rename = require('gulp-rename'),
 runSequence = require('run-sequence'),
 templateHTML = require('./template/data'),
 browserSync = require('browser-sync').create();
- 
- 
+
 gulp.task('render', function(){
 
-    var files = ['chat', 'provider'];
-
-    files.forEach(function(name) {
-        gulp.src("./js/" + name + ".js")
+        gulp.src(["./js/**.js", "!./js/firebase.js"])
             .pipe(debug({title: 'Render Task:'}))
             .pipe(ejs({data: templateHTML}))
             .pipe(gulp.dest("./dist"));
-    })
 })
 /*
 gulp.task('dist-html', function(){
@@ -54,10 +49,4 @@ gulp.task('move-to-dis', function(callback){
     );
 })
 */
-gulp.task('default', function(callback){
-    runSequence(
-        //'move-to-dis',
-        'render',
-        callback
-    );
-})
+gulp.task('default', ["render"])
