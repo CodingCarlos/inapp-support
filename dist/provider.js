@@ -8,10 +8,11 @@ function IASChatProvider(config) {
 		button: false
 	});
 	var cid;
+	var container = config.container;
 
 	var setSupporterBind = setSupporter.bind(this);
 
-	printInterface();
+	printInterface(container);
 
 	setSupportUser();
 
@@ -31,13 +32,31 @@ function IASChatProvider(config) {
 
 	/* ### Interface ### */
 
-	function printInterface(text, received) {
+	function printInterface(container) {
 		// Compressed version of html/chat.html turned to string
-		var ias = '<div id="iasProvider"><div id="iasProvider_unassigned-chat"><h3>Unassigned Users:</h3><ul class="iasProvider_users-chat"></ul></div> <div id="iasProvider_assigned-chat"><h3>Your Users:</h3><ul class="iasProvider_users-chat"></ul></div></div><style>#iasProvider {        font-family: "Roboto","Helvetica","Arial",sans-serif!important;    }.iasProvider_users-chat {list-style: none;margin: 0;padding: 0;}.iasProvider_users-chat li div {display: inline-block;vertical-align: middle;}.iasProvider_users-chat li div.iasProvider_users-chat-pic {box-sizing: border-box;padding: 8px 16px;width: 72px;}.iasProvider_users-chat li div.iasProvider_users-chat-pic img {border-radius: 50%;height: 40px;width: 40px;}.iasProvider_users-chat li div.iasProvider_users-chat-name {font-size: 16px;}</style>'
+		var ias = '<div id="iasProvider"><div id="iasProvider_unassigned-chat"><h3>Unassigned Users:</h3><ul class="iasProvider_users-chat"></ul></div> <div id="iasProvider_assigned-chat"><h3>Your Users:</h3><ul class="iasProvider_users-chat"></ul></div></div><style>#iasProvider {font-family: "Roboto","Helvetica","Arial",sans-serif!important;}.iasProvider_users-chat {list-style: none;margin: 0;padding: 0;}.iasProvider_users-chat li div {display: inline-block;vertical-align: middle;}.iasProvider_users-chat li div.iasProvider_users-chat-pic {box-sizing: border-box;padding: 8px 16px;width: 72px;}.iasProvider_users-chat li div.iasProvider_users-chat-pic img {border-radius: 50%;height: 40px;width: 40px;}.iasProvider_users-chat li div.iasProvider_users-chat-name {font-size: 16px;}</style>'
 
 		// Also add the provider styles from css/provider-style.css
 		// ias += '';
-		document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
+
+		var printplace = null;
+
+		if(typeof(container) !== 'undefined') {
+			if(container.indexOf('#') !== -1) {
+				container = container.slice(1);
+				printplace = document.getElementById(container);
+			} else if(container.indexOf('.') !== -1) {
+				container = container.slice(1);
+				printplace = document.getElementsByClassName(container)[0];
+			}
+		}
+
+		if(printplace === null) {
+			printplace = document.getElementsByTagName('body')[0];
+		} 
+		
+		printplace.insertAdjacentHTML('beforeend', ias);
+
 	}
 
 

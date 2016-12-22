@@ -35,6 +35,9 @@
 
 <h1>Support side chat</h1>
 
+<div id="support">
+</div>
+
 	<!-- Firebase -->
 	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
 	<script src="../js/firebase.js"></script>
@@ -49,7 +52,8 @@
 	window.onload = function() {
 		window.IASChatProvider = new IASChatProvider({
 			uid: 4321, 
-			name: 'support'
+			name: 'support',
+			container: '#support'
 		});
 	};
 	</script>	

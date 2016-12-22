@@ -8,10 +8,11 @@ function IASChatProvider(config) {
 		button: false
 	});
 	var cid;
+	var container = config.container;
 
 	var setSupporterBind = setSupporter.bind(this);
 
-	printInterface();
+	printInterface(container);
 
 	setSupportUser();
 
@@ -31,13 +32,31 @@ function IASChatProvider(config) {
 
 	/* ### Interface ### */
 
-	function printInterface(text, received) {
+	function printInterface(container) {
 		// Compressed version of html/chat.html turned to string
 		var ias = '<%- data.iasProvider %>'
 
 		// Also add the provider styles from css/provider-style.css
 		// ias += '<%- data.iasProviderStyle %>';
-		document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
+
+		var printplace = null;
+
+		if(typeof(container) !== 'undefined') {
+			if(container.indexOf('#') !== -1) {
+				container = container.slice(1);
+				printplace = document.getElementById(container);
+			} else if(container.indexOf('.') !== -1) {
+				container = container.slice(1);
+				printplace = document.getElementsByClassName(container)[0];
+			}
+		}
+
+		if(printplace === null) {
+			printplace = document.getElementsByTagName('body')[0];
+		} 
+		
+		printplace.insertAdjacentHTML('beforeend', ias);
+
 	}
 
 
