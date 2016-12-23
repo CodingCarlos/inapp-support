@@ -2,6 +2,7 @@ function IASChatProvider(config) {
 
 	var uid = config.uid;
 	var name = config.name;
+	var pic = config.pic
 	var chat = new IASChat({
 		uid: uid,
 		name: name,
@@ -89,7 +90,7 @@ function IASChatProvider(config) {
 		var user = document.createElement('li');
 			user.setAttribute("data-cid", data.uid);
 			user.setAttribute("data-supporter", supporter);
-			user.innerHTML = '<div class="iasProvider_users-chat-pic"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg"></div><div class="iasProvider_users-chat-name">' + data.name + '</div>';
+			user.innerHTML = '<div class="iasProvider_users-chat-pic"><img src="' + data.pic + '"></div><div class="iasProvider_users-chat-name">' + data.name + '</div>';
 
 		user.addEventListener('click', usersChatManagement, false);
 

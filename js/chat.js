@@ -6,6 +6,7 @@ function IASChat(config) {
 	var cid;
 	var uid;
 	var name;
+	var pic;
 	var button = config.button || false;
 	var topbarBg = config.topbarBg || '#ff9800';
 	var topbarColor = config.topbarColor || '#fff';
@@ -71,12 +72,16 @@ function IASChat(config) {
 			
 		}
 	}	
+
 	/* ### Set chat properties ### */
 
 	function setUser(config) {
 		uid = config.uid;
 		cid = config.cid || config.uid;
 		name = config.name || '';
+		pic = config.pic || '';
+
+		setChatData();
 
 		clearMessages();
 
@@ -85,6 +90,34 @@ function IASChat(config) {
 		}
 		messagesRef = firebase.database().ref('messages/' + cid);
 		messagesRef.on('child_added', receiveMessage);
+	}
+
+	function setChatData() {
+
+		userRef = firebase.database().ref('users/' + cid);
+		userRef.on('value', function(data) {
+			var key = data.key;
+			var user = data.val();
+
+			var printData = {};
+
+			if(uid == cid) {
+				if (user !== null && user.supporter != -1) {
+					printData.name = user.supporter.name;
+					printData.pic = user.supporter.pic;
+				} else {
+					printData.name = 'Default support';
+					printData.pic = 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
+				}
+			} else {
+				printData.name = user.name;
+				printData.pic = user.pic;
+			}
+		
+			document.getElementById('ias_topbar-text').innerHTML = printData.name;
+			document.getElementById('ias_topbar-pic').firstChild.setAttribute('src', printData.pic);
+		});
+
 	}
 
 
@@ -171,6 +204,7 @@ function IASChat(config) {
 				// Add user
 				firebase.database().ref('users/' + cid).set({
 					name: name,
+					pic: pic,
 					isSupporter: false,
 					supporter: -1,
 					lastMessage: msg
