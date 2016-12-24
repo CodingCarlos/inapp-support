@@ -8,8 +8,15 @@ function IASChat(config) {
 	var name;
 	var pic;
 	var button = config.button || false;
-	var topbarBg = config.topbarBg || '#ff9800';
-	var topbarColor = config.topbarColor || '#fff';
+	var mainColor = config.mainColor || '#ff9800';
+	var textColor = config.textColor || '#ffffff';
+	var topbarBg = config.topbarBg || mainColor;
+	var topbarColor = config.topbarColor || textColor;
+	var buttonBg = config.buttonBg || mainColor;
+	var buttonColor = config.buttonColor || textColor;
+	var inputBorderColor = config.inputBorderColor || mainColor;
+	var defaultSupportName = config.defaultSupportName || 'Support chat';
+	var defaultSupportPic = config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
 
 	// Prepare interface
 	printInterface();
@@ -17,9 +24,12 @@ function IASChat(config) {
 	// Prepare listeners
 	var show = document.getElementById('ias-show');
 	var ias = document.getElementById('ias');
+	var topbar = document.getElementById('ias_topbar');
 	var close = document.getElementById('ias_topbar-close');
 	var form = document.getElementById('ias_write-form');
 	var messages = document.getElementById('ias_messages');
+
+	customizeInterfaze();
 
 	var messagesRef;
 
@@ -99,15 +109,15 @@ function IASChat(config) {
 			var key = data.key;
 			var user = data.val();
 
-			var printData = {};
+			var printData = {
+				name: defaultSupportName,
+				pic: defaultSupportPic
+			};
 
 			if(uid == cid) {
 				if (user !== null && user.supporter != -1) {
 					printData.name = user.supporter.name;
 					printData.pic = user.supporter.pic;
-				} else {
-					printData.name = 'Default support';
-					printData.pic = 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
 				}
 			} else {
 				printData.name = user.name;
@@ -123,7 +133,7 @@ function IASChat(config) {
 
 	/* ### Interface ### */
 
-	function printInterface(text, received) {
+	function printInterface() {
 		// Compressed version of html/chat.html turned to string
 		var ias = '<%- data.ias %>'
 
@@ -135,6 +145,21 @@ function IASChat(config) {
 		// Also add the styles from css/style.css
 		ias += '<%- data.iasStyle %>';
 		document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
+	}
+
+	function customizeInterfaze() {
+		// Topbar
+		topbar.style.backgroundColor = topbarBg;
+		topbar.style.color = topbarColor;
+		topbar.style.fill = topbarColor;
+
+		// Open chat button
+		show.style.backgroundColor = buttonBg;
+		show.style.color = buttonColor;
+		show.style.fill = buttonColor;
+
+		// Form colors
+		form.children[0].style.borderColor = inputBorderColor;
 	}
 
 

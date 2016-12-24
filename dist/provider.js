@@ -154,6 +154,7 @@ function IASChatProvider(config) {
 				// Add user
 				firebase.database().ref('users/' + uid).set({
 					name: name,
+					pic: pic,
 					isSupporter: true,
 					supporter: -1,
 					lastMessage: {
@@ -177,7 +178,8 @@ function IASChatProvider(config) {
 		firebase.database().ref('users/' + cid).update({
 			supporter: {
 				uid: uid,
-				name: name
+				name: name,
+				pic: pic
 			}
 		});
 	}
