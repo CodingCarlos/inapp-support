@@ -68,4 +68,14 @@ Yes, I shall work on this.
 Nope, right now is not desktop/tablet responsive, just mobile, but I'm doing my best to add larger screen support. 
 
 ## Contribute
-You can use this code as you like. If you find a bug, or want to ask for a feature, just open an issue, and we'll do our best. If you can fix it, do a pull request to ´´´dev´´´ branch, and we promise to review it as fast as possible to merge it
+You can use this code as you like. If you find a bug, or want to ask for a feature, just open an issue, and we'll do our best. If you can fix it, do a pull request to ``dev`` branch, and we promise to review it as fast as possible to merge it. 
+
+If you are new on this open source world, here is a short guide about how to make a pull request to contribute:
+
+1. [Fork](https://github.com/CodingCarlos/inapp-support/fork) then clone `git clone git@github.com:your-username/inapp-support.git` inapp-support repository
+2. Create a new branch in your personally forked repo, with a name similar to your edits, such as `fix-whatever`
+3. Make your edits inside your new branch
+4. Commit them and push them back to your personal github fork
+5. Make a new [Pull Request](https://github.com/CodingCarlos/inapp-support/compare/) on the inapp-support repo. Point your branch to the `dev` inapp-support branch and submit.
+
+I will do my best to review and accept the commit as soon as possible.
