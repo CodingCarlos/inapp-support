@@ -18,6 +18,7 @@ window.onload = function() {
   window.IASChat = new IASChat({
     uid: '33g07u1sDg44aa12', // The user id here
     name: 'CodingCarlos',    // The user name here
+    pic: 'http://yourdomain.com/pic/user/pic.jpg' // The user picture here
     button: true
   });
 };
@@ -30,38 +31,71 @@ And it's done!
 
 ## Configuration
 ### client js
-To configure the chat, just use the object passed on IASChat instantiation.
+To configure the chat, just use the object passed on IASChat instantiation. *Bold are mandatory*
 
- - uid: String User id (if you put a Number, shall work, but I can't promise you that it will work as expected)
- - name: String User name
- - button: Boolean Show or not the fab button to open the chat
- 
- Next up!
- 
-  - User pictures
-  - Topbar background color
-  - Topbar text color
-  - Topbar default image
-  - Topbar default "support" name
-  - Fab background color
-  - Fab icon color
+ - **uid**: String User id (if you put a Number, shall work, but I can't promise you that it will work as expected)
+ - **name**: String User name
+ - **pic**: String User picture
+ - **button**: Boolean Show or not the fab button to open the chat
+ - mainColor: Color [hex, name, rgb, rgba] Main color (chat topbar background, show button background and chat input border bottom)
+ - textColor: Color Main text color (Chat topbar text/icons, show button text/icons)
+ - topbarBg: Color Chat topbar background color
+ - topbarColor: Color Chat topbar text and icons color
+ - buttonBg: Color Show button background color
+ - buttonColor: Color Show button text/icon color
+ - inputBorderColor: Color Chat text input border bottom color
+ - defaultSupportName: String Default support name (if no supporter assigned)
+ - defaultSupportPic: String Default support picture (if no supporter assigned)
+
 
 ### firebase
-Create a new firebase project, and add the configuration script to your code, if possible, before including chat.js.
+Create a new firebase project (or use a existing one), and add the configuration script to your code, if possible, before including chat.js.
 
-Right now, I'm not sure how to configure the security of firebase well, but I will do my research
+Then, configure your security rules according to your authentication method (if you are already using firebase authentication as app authentication, the same authentication is valid). If you are not already using firebase authentication, but a custom method, maybe you shall [use the firease custom authentication method](https://firebase.google.com/docs/auth/web/custom-auth) (I'll try to add more info and demos in the future).
+
+Just for a test, set the rules as this:
+```
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+```
+*Be careful: This allows anybody to read and write ALL your database. This is just for test prouposes, not for production.*
 
 ## Support panel
-Take the code in demo/support.html and add to your existent panel. Yes, so easy. Yes, I've done very little work on this part.
+Check the code in demo/support.html to add to your existent panel. No authorization/authentication done here. That is your work in your own control/support pannel. As said before, you shall check yourself the firebase rules.
+
+```html
+<!-- Include IASChat -->
+<script src="js/chat.js"></script>
+<!-- Include IASChat Support Provider -->
+<script src="js/provider.js"></script>
+
+<!-- Main working -->
+<script type="text/javascript">	
+window.onload = function() {
+  window.IASChatProvider = new IASChatProvider({
+    uid: '8sd0df4s8f0ss', // The support user id here
+    name: 'Supporter',    // The support user name here
+    pic: 'http://yourdomain.com/pic/user/pic.jpg' // The supporter picture here
+    container: '#container' // OPTIONAL: Container for support pannel (*#identifier* or *.className*).
+  });
+};
+</script>
+```
 
 ### Assign user to supporter
-For now, no assignation is done. In v0.1, supporter wil got assigned any chat that answer. Unassigned chats will appear to all supporters. To change assignation, for now, you have to do it in firebase console. In v0.2 the actual supporter will be able to change the supporter assigned to the chat.
+Supporter wil got assigned any chat that answer. Unassigned chats will appear to all supporters. To change assignation, for now, you have to do it in firebase console. 
+
+In the future any supporter will be able to assign a chat, or change it's assignations to other supporter. But so, in the future.
 
 ### Add supporters
-Will be a beautifull form to do that in the 0.2. Now, initialize the user and done.
+Initialize the support user, and done.
 
 ### Secure the panel
-Yes, I shall work on this.
+This is your work. Support pannel in demo folder is not really a support panel, but a demo. This is not a fully control panel app, just a support chat "component" to add to your existing app.
 
   
 ## Responsiveness
