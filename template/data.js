@@ -12,5 +12,9 @@ module.exports = {
 }
 
 function clean(file) {
-	return file.replace(/(\r\n\t|\n|\r|\t)/gm,"").replace(/(\')/gm,"\\\'").replace(/(\")/gm,'\\\"');
+
+	// It was working, but keeps some tabs turned to spaces...
+	// return file.replace(/(\r\n\t|\n|\r|\t)/gm,"").replace(/(\')/gm,"\\\'").replace(/(\")/gm,'\\\"');
+
+	return file.replace(/\s{2,}/g,"").replace(/(\')/gm,"\\\'").replace(/(\")/gm,'\\\"');
 }
