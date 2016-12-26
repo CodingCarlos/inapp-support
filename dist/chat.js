@@ -28,10 +28,12 @@ function IASChat(config) {
 	var close = document.getElementById('ias_topbar-close');
 	var form = document.getElementById('ias_write-form');
 	var messages = document.getElementById('ias_messages');
+	var uploadFile = document.getElementById("uploadFile");
 
 	customizeInterfaze();
 
 	var messagesRef;
+	var storageRef = firebase.storage().ref();
 
 	// Listen event submit
 	if(show) {
@@ -41,6 +43,7 @@ function IASChat(config) {
 	}
 	close.addEventListener('click', hideIAS.bind(this));
 	form.addEventListener('submit', saveMessage.bind(this));
+	uploadFile.addEventListener('change', upload);
 	
 	// Set user
 	setUser(config);
@@ -135,7 +138,7 @@ function IASChat(config) {
 
 	function printInterface() {
 		// Compressed version of html/chat.html turned to string
-		var ias = '<div id=\"ias\" class=\"hidden\">    <div id=\"ias_topbar\">        <div id=\"ias_topbar-pic\"><img src=\"https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg\">        </div>        <div id=\"ias_topbar-text\">Support</div>        <div id=\"ias_topbar-close\">            <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />                <path d=\"M0 0h24v24H0z\" fill=\"none\" />            </svg>        </div>    </div>    <div id=\"ias_messages\"></div>    <div id=\"ias_write\">        <form id=\"ias_write-form\">            <input type=\"text\" />            <button type=\"submit\">                <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                    <path d=\"M2.01 21L23 12 2.01 3 2 10l15 2-15 2z\" />                    <path d=\"M0 0h24v24H0z\" fill=\"none\" />                </svg>            </button>        </form>    </div></div>'
+		var ias = '<div id=\"ias\" class=\"hidden\">    <div id=\"ias_topbar\">        <div id=\"ias_topbar-pic\"><img src=\"https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg\">        </div>        <div id=\"ias_topbar-text\">Support</div>        <div id=\"ias_topbar-close\">            <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />                <path d=\"M0 0h24v24H0z\" fill=\"none\" />            </svg>        </div>    </div>    <div id=\"ias_messages\"></div>    <div id=\"ias_write\">        <input type=\"file\" id=\"uploadFile\" />        <form id=\"ias_write-form\">            <input type=\"text\" />            <button type=\"submit\">                <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                    <path d=\"M2.01 21L23 12 2.01 3 2 10l15 2-15 2z\" />                    <path d=\"M0 0h24v24H0z\" fill=\"none\" />                </svg>            </button>        </form>    </div></div>'
 
 		// If shall show button, add it to interface (from html/show-button.html)
 		if(button) {
@@ -323,5 +326,123 @@ function IASChat(config) {
 			}
 		}
 	}
+
+
+	/* ### UPLOAD FILES ### */
+
+	function upload() {
+
+		// File or Blob named mountains.jpg
+		var file = uploadFile.files[0];
+
+		if(!file) {
+			console.error('Empty file');
+			return false;
+		}
+
+		var extension = validateExtension(file);
+
+		if(extension === null) {
+			console.error('Invalid file extension');
+			return false;
+		}
+
+		var contentType = '';
+		switch(extension) {
+			case '.jpg':
+			case '.jpeg':
+				contentType = 'image/jpeg';
+				break;
+
+			case '.png':
+				contentType = 'image/png';
+				break;
+
+			case '.bmp':
+				contentType = 'image/bmp';
+				break;
+
+			case '.gif':
+				contentType = 'image/gif';
+				break;
+		}
+
+		// Create the file metadata
+		var metadata = {
+			contentType: contentType
+		};
+
+		// Upload file and metadata to the object 'images/mountains.jpg'
+		var uploadTask = storageRef.child('images/' + uid + '/' + file.name).put(file, metadata);
+
+		// Listen for state changes, errors, and completion of the upload.
+		uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+			function(snapshot) {
+				// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+				var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+				console.log('Upload is ' + progress + '% done');
+				switch (snapshot.state) {
+					case firebase.storage.TaskState.PAUSED: // or 'paused'
+						console.log('Upload is paused');
+						break;
+					case firebase.storage.TaskState.RUNNING: // or 'running'
+						console.log('Upload is running');
+						break;
+				}
+			}, function(error) {
+				switch (error.code) {
+					case 'storage/unauthorized':
+						// User doesn't have permission to access the object
+						console.error('User doesn\'t have permission to access the object');
+						break;
+
+					case 'storage/canceled':
+						// User canceled the upload
+						console.error('User cancelled upload');
+						break;
+
+					case 'storage/unknown':
+						// Unknown error occurred, inspect error.serverResponse
+						console.error('Unknown error ocured:');
+						console.error(error.serverResponse);
+						break;
+
+					default:
+						console.error('Unexpected and unhandeled error ocured:');
+						console.error(error);
+				}
+			}, function() {
+				// Upload completed successfully, now we can get the download URL
+				var downloadURL = uploadTask.snapshot.downloadURL;
+				console.log('Fille successfully uploaded to:');
+				console.log(downloadURL);
+				console.log('Would be a good moment to add a message including the file url...');
+			});
+	}
+
+	function validateExtension(file) {
+
+		var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".gif", ".png"];
+		var fileName = file.name;
+
+		var extension = null;
+
+		if (fileName.length > 0) {
+			
+			for (var j = 0; j < _validFileExtensions.length; j++) {
+				var thisExt = _validFileExtensions[j];
+
+				// Check the extension is valid
+				if (fileName.substr(fileName.length - thisExt.length, thisExt.length).toLowerCase() == thisExt.toLowerCase()) {
+					extension = thisExt;
+					break;
+				}
+			}
+
+		}
+		
+		return extension;
+	}
+
 }
 
