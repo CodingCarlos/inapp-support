@@ -6,10 +6,10 @@
 **WARNING**: This is not a stable version. We are currently developing things, and it may have heavy security problems, have parts not finished, have parts broken, or crash unexpectedly. I do not recommend you to use it in production yet.
 
 # inapp-support
-HTML5 inApp support chat using your own firebase account. Just add your firebase config (as in firebase console is given to you), and add to your code:
+HTML5 inApp support chat using your own firebase account. It is also possible to send images. Just include firebase, your config (as in firebase console is given to you), and add to your code:
 
 ```html
-<!-- Include IASChat -->
+<!-- Include IASChat, take it from dist/chat.js -->
 <script src="js/chat.js"></script>
 
 <!-- Main working -->
@@ -47,13 +47,16 @@ To configure the chat, just use the object passed on IASChat instantiation. *Bol
  - defaultSupportName: String Default support name (if no supporter assigned)
  - defaultSupportPic: String Default support picture (if no supporter assigned)
 
+In the future, early future, I hope...
+ - uploadFiles: Boolean Enable or disable the option to upload and send pictures.
+ - onlyPictures: Boolean Allow only pictures, or all file types.
 
 ### firebase
 Create a new firebase project (or use a existing one), and add the configuration script to your code, if possible, before including chat.js.
 
 Then, configure your security rules according to your authentication method (if you are already using firebase authentication as app authentication, the same authentication is valid). If you are not already using firebase authentication, but a custom method, maybe you shall [use the firease custom authentication method](https://firebase.google.com/docs/auth/web/custom-auth) (I'll try to add more info and demos in the future).
 
-Just for a test, set the rules as this:
+Just for a test, set the rules as this for database:
 ```
 {
   "rules": {
@@ -62,7 +65,18 @@ Just for a test, set the rules as this:
   }
 }
 ```
-*Be careful: This allows anybody to read and write ALL your database. This is just for test prouposes, not for production.*
+And for storage:
+```
+service firebase.storage {
+  match /b/chat-e6e7d.appspot.com/o {
+    match /{allPaths=**} {
+    	allow read, write: if true;
+      //allow read, write: if request.auth != null;
+    }
+  }
+}
+```
+**Be careful**: *This allows anybody to read and write ALL your database and files. This is just for test prouposes, not for production.*
 
 ## Support panel
 Check the code in demo/support.html to add to your existent panel. No authorization/authentication done here. That is your work in your own control/support pannel. As said before, you shall check yourself the firebase rules.
