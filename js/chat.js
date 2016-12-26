@@ -50,6 +50,9 @@ function IASChat(config) {
 	form.addEventListener('submit', saveMessage.bind(this));
 	uploadFile.addEventListener('change', previewImage);
 	attatchmentClose.addEventListener('click', closeImage);
+
+	// Detect height change, becouse of adding messages, or rendering images
+	onElementHeightChange(messages, scrollDown);
 	
 	// Set user
 	setUser(config);
@@ -169,6 +172,24 @@ function IASChat(config) {
 
 		// Form colors
 		form.children[0].style.borderColor = inputBorderColor;
+	}
+
+
+	function onElementHeightChange(elm, callback){
+		var lastHeight = elm.scrollHeight, newHeight;
+		(function run() {
+			newHeight = elm.scrollHeight;
+			if(lastHeight != newHeight) {
+				callback();
+			}
+			lastHeight = newHeight;
+
+			if(elm.onElementHeightChangeTimer) {
+				clearTimeout(elm.onElementHeightChangeTimer);
+			}
+
+			elm.onElementHeightChangeTimer = setTimeout(run, 300);
+		})();
 	}
 
 
@@ -517,7 +538,6 @@ function IASChat(config) {
 		
 		return extension;
 	}
-
 
 
 }
