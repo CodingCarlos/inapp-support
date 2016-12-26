@@ -266,7 +266,7 @@ function IASChat(config) {
 
 		// Check if is a photo
 		if(typeof(message.img) !== 'undefined') {
-			text = '<img src="' + message.img + '" />';
+			text = '<a href="' + message.img + '" target="_blank"><img src="' + message.img + '" /></a>';
 			// If there is text with the image, add it
 			if(message.text !== '' || message.text !== ' ') {
 				text += '<br>' + message.text;
