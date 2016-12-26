@@ -166,9 +166,11 @@ function IASChat(config) {
 		topbar.style.fill = topbarColor;
 
 		// Open chat button
-		show.style.backgroundColor = buttonBg;
-		show.style.color = buttonColor;
-		show.style.fill = buttonColor;
+		if(button) {
+			show.style.backgroundColor = buttonBg;
+			show.style.color = buttonColor;
+			show.style.fill = buttonColor;
+		}
 
 		// Form colors
 		form.children[0].style.borderColor = inputBorderColor;
