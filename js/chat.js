@@ -28,12 +28,17 @@ function IASChat(config) {
 	var close = document.getElementById('ias_topbar-close');
 	var form = document.getElementById('ias_write-form');
 	var messages = document.getElementById('ias_messages');
-	var uploadFile = document.getElementById("uploadFile");
+	var uploadFile = document.getElementById("ias_write-attachment-uploadFile");
+	var attach = document.getElementById("ias_attachment");
+	var attatchmentClose = document.getElementById('ias_attachment-close');
+	var attatchmentPreview = document.getElementById('ias_attachment-preview');
 
 	customizeInterfaze();
 
 	var messagesRef;
 	var storageRef = firebase.storage().ref();
+
+	var attatchment = null;
 
 	// Listen event submit
 	if(show) {
@@ -43,7 +48,8 @@ function IASChat(config) {
 	}
 	close.addEventListener('click', hideIAS.bind(this));
 	form.addEventListener('submit', saveMessage.bind(this));
-	uploadFile.addEventListener('change', upload);
+	uploadFile.addEventListener('change', previewImage);
+	attatchmentClose.addEventListener('click', closeImage);
 	
 	// Set user
 	setUser(config);
@@ -173,17 +179,19 @@ function IASChat(config) {
 			e.preventDefault();
 		}
 
-		var text = e.srcElement.children[0].value
+		var text = e.srcElement.children[1].value
 
 		if(text === '') {
 			console.log('tried to send empty form. Rejected.');
 			return false;
 		}
 
-		// printMessage(text);
-		pushMessage(text);
-
-		clearForm();
+		if(attatchment !== null) {
+			upload(text);
+		} else {
+			pushMessage(text);
+			clearForm();
+		}
 	}
 
 	function printMessage(text, received) {
@@ -214,7 +222,7 @@ function IASChat(config) {
 	}
 
 	function clearForm() {
-		form.children[0].value = '';
+		form.children[1].value = '';
 	}
 
 	function pushMessage(text, img) {
@@ -259,6 +267,10 @@ function IASChat(config) {
 		// Check if is a photo
 		if(typeof(message.img) !== 'undefined') {
 			text = '<img src="' + message.img + '" />';
+			// If there is text with the image, add it
+			if(message.text !== '' || message.text !== ' ') {
+				text += '<br>' + message.text;
+			}
 		}
 
 		if(message.uid == uid) {
@@ -341,12 +353,54 @@ function IASChat(config) {
 	}
 
 
+	/* ###  ATTACH FILES ### */
+
+	function previewImage() {
+		var file = uploadFile.files[0];
+
+		if(!file) {
+			console.error('Empty file');
+			return false;
+		}
+
+		attatchment = file;
+
+		// Preview image
+		var reader = new FileReader();
+
+        reader.onload = function (e) {
+            // $('#blah').attr('src', e.target.result);
+        	attatchmentPreview.innerHTML = '<img src="' + e.target.result + '">';
+        }
+
+        reader.readAsDataURL(file);
+
+        // Show attachment preview
+        if (attach.classList) {
+			attach.classList.remove('hidden');
+		} else {
+			attach.className = attach.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+		}
+	}
+
+	function closeImage() {
+		attatchment = null;
+		attatchmentPreview.innerHTML = 'Loading preview...';
+
+		if (attach.classList) {
+			attach.classList.add('hidden');
+		} else {
+			attach.className += ' ' + 'hidden';
+		}
+	}
+
+
 	/* ### UPLOAD FILES ### */
 
-	function upload() {
+	function upload(text) {
 
 		// File or Blob named mountains.jpg
-		var file = uploadFile.files[0];
+		var file = attatchment; // uploadFile.files[0];
 
 		if(!file) {
 			console.error('Empty file');
@@ -427,10 +481,16 @@ function IASChat(config) {
 			}, function() {
 				// Upload completed successfully, now we can get the download URL
 				var downloadURL = uploadTask.snapshot.downloadURL;
-				console.log('Fille successfully uploaded to:');
-				console.log(downloadURL);
+
+				console.log(text);
+
+				if(typeof(text) === 'undefined') {
+					text = '';
+				}
 				
-				pushMessage('', downloadURL)
+				pushMessage(text, downloadURL);
+				closeImage();
+				clearForm();
 			});
 	}
 

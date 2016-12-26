@@ -28,12 +28,17 @@ function IASChat(config) {
 	var close = document.getElementById('ias_topbar-close');
 	var form = document.getElementById('ias_write-form');
 	var messages = document.getElementById('ias_messages');
-	var uploadFile = document.getElementById("uploadFile");
+	var uploadFile = document.getElementById("ias_write-attachment-uploadFile");
+	var attach = document.getElementById("ias_attachment");
+	var attatchmentClose = document.getElementById('ias_attachment-close');
+	var attatchmentPreview = document.getElementById('ias_attachment-preview');
 
 	customizeInterfaze();
 
 	var messagesRef;
 	var storageRef = firebase.storage().ref();
+
+	var attatchment = null;
 
 	// Listen event submit
 	if(show) {
@@ -43,7 +48,8 @@ function IASChat(config) {
 	}
 	close.addEventListener('click', hideIAS.bind(this));
 	form.addEventListener('submit', saveMessage.bind(this));
-	uploadFile.addEventListener('change', upload);
+	uploadFile.addEventListener('change', previewImage);
+	attatchmentClose.addEventListener('click', closeImage);
 	
 	// Set user
 	setUser(config);
@@ -138,7 +144,7 @@ function IASChat(config) {
 
 	function printInterface() {
 		// Compressed version of html/chat.html turned to string
-		var ias = '<div id=\"ias\" class=\"hidden\">    <div id=\"ias_topbar\">        <div id=\"ias_topbar-pic\"><img src=\"https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg\">        </div>        <div id=\"ias_topbar-text\">Support</div>        <div id=\"ias_topbar-close\">            <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />                <path d=\"M0 0h24v24H0z\" fill=\"none\" />            </svg>        </div>    </div>    <div id=\"ias_messages\"></div>    <div id=\"ias_write\">        <form id=\"ias_write-form\">            <span id=\"attachment\">                <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                    <path d=\"M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z\"/>                    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>                </svg>                <input type=\"file\" id=\"uploadFile\" />            </span>            <input type=\"text\" />            <button type=\"submit\">                <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                    <path d=\"M2.01 21L23 12 2.01 3 2 10l15 2-15 2z\" />                    <path d=\"M0 0h24v24H0z\" fill=\"none\" />                </svg>            </button>        </form>    </div></div>'
+		var ias = '<div id=\"ias\" class=\"hidden\">    <div id=\"ias_topbar\">        <div id=\"ias_topbar-pic\"><img src=\"https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg\">        </div>        <div id=\"ias_topbar-text\">Support</div>        <div id=\"ias_topbar-close\">            <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" />                <path d=\"M0 0h24v24H0z\" fill=\"none\" />            </svg>        </div>    </div>    <div id=\"ias_messages\"></div>    <div id=\"ias_attachment\" class=\"hidden\">        <span id=\"ias_attachment-close\">            <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                <path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"></path>                <path d=\"M0 0h24v24H0z\" fill=\"none\"></path>            </svg>        </span>        <span id=\"ias_attachment-preview\"></span>    </div>    <div id=\"ias_write\">        <form id=\"ias_write-form\">            <span id=\"ias_write-attachment\">                <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                    <path d=\"M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z\"/>                    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>                </svg>                <input type=\"file\" id=\"ias_write-attachment-uploadFile\" />            </span>            <input type=\"text\" />            <button type=\"submit\">                <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\">                    <path d=\"M2.01 21L23 12 2.01 3 2 10l15 2-15 2z\" />                    <path d=\"M0 0h24v24H0z\" fill=\"none\" />                </svg>            </button>        </form>    </div></div>'
 
 		// If shall show button, add it to interface (from html/show-button.html)
 		if(button) {
@@ -146,7 +152,7 @@ function IASChat(config) {
 		}
 
 		// Also add the styles from css/style.css
-		ias += '<style>    #ias {        font-family: \'Roboto\',\'Helvetica\',\'Arial\',sans-serif!important;        position: fixed;        top: 0;        left: 0;        height: 100%;        width: 100%;        z-index: 999;    }    #ias.hidden {        display: none;    }    #ias_topbar {        background-color: #ff9800;        color: #fff;        fill: #fff;        height: 56px;        width: 100%;    }    #ias_topbar #ias_topbar-pic {        padding: 8px 16px;        width: 40px;        height: 40px;        float: left;    }    #ias_topbar #ias_topbar-pic img {        height: 100%;        border-radius: 50%;    }    #ias_topbar #ias_topbar-text {        float: left;        margin-left: 6px;        margin-top: 14px;        font-size: 24px;    }    #ias_topbar #ias_topbar-close {        color: #fff;        float: right;        font-size: 24px;        margin: 16px 16px 0 0;    }    #ias_messages {        background: #f7f8fb;        height: calc(100% - 117px);        overflow: auto;        padding-top: 12px;    }    .ias_message {        margin: 4px 8px;        padding: 4px 12px;    }    .ias_message-sent {        text-align: right;    }    .ias_message span {        background-color: #fff;        padding: 4px 12px;        border-radius: 5px 5px 0 5px;        box-shadow: 1px 1px 5px rgba(0, 0, 0, .1);        color: #333;        display: inline-block;    }        .ias_message span img {            margin: 8px 0 4px;            max-width: 300px;            max-height: 264px;        }    #ias_write {        background-color: #fff;        border-top: 1px solid #efefef;        height: 48px;        position: fixed;        bottom: 0;        left: 0;        width: 100%;    }    #ias_write input {        border: 0;        border-bottom: 1px solid #ff9800;        height: 31px;        margin: 0 48px;        outline: none;        padding: 8px 8px 0px 8px;        width: 70%;        width: calc(100% - 122px);    }    #ias_write #attachment svg {        position: absolute;        left: 12px;        top: 13px;    }    #ias_write #attachment input#uploadFile {        width: 24px;        margin: 0px 4px;        opacity: 0;        position: absolute;        top: 4px;        left: 0px;    }    #ias_write button {        background-color: #fff;        border: none;        position: fixed;        right: 12px;        bottom: 5px;        border-radius: 50%;        font-size: 24px;        width: 34px;        padding: 0;        overflow: hidden;        line-height: normal;    }    #ias-show {        background-color: #ff9800;        border-radius: 50%;        bottom: 16px;        box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, .12), 0 1px 1px 0 rgba(0, 0, 0, .24);        box-sizing: border-box;        color: #fff;        fill: #fff;        height: 56px;        padding: 16px;        position: fixed;        right: 16px;        width: 56px;    }</style>';
+		ias += '<style>    #ias {        font-family: \'Roboto\',\'Helvetica\',\'Arial\',sans-serif!important;        position: fixed;        top: 0;        left: 0;        height: 100%;        width: 100%;        z-index: 999;    }    #ias.hidden {        display: none;    }    #ias_topbar {        background-color: #ff9800;        color: #fff;        fill: #fff;        height: 56px;        width: 100%;    }    #ias_topbar #ias_topbar-pic {        padding: 8px 16px;        width: 40px;        height: 40px;        float: left;    }    #ias_topbar #ias_topbar-pic img {        height: 100%;        border-radius: 50%;    }    #ias_topbar #ias_topbar-text {        float: left;        margin-left: 6px;        margin-top: 14px;        font-size: 24px;    }    #ias_topbar #ias_topbar-close {        color: #fff;        float: right;        font-size: 24px;        margin: 16px 16px 0 0;    }    #ias_messages {        background: #f7f8fb;        height: calc(100% - 117px);        overflow: auto;        padding-top: 12px;    }    .ias_message {        margin: 4px 8px;        padding: 4px 12px;    }    .ias_message-sent {        text-align: right;    }    .ias_message span {        background-color: #fff;        padding: 4px 12px;        border-radius: 5px 5px 0 5px;        box-shadow: 1px 1px 5px rgba(0, 0, 0, .1);        color: #333;        display: inline-block;    }        .ias_message span img {            margin: 8px 0 4px;            max-width: 300px;            max-height: 264px;        }    #ias_attachment {        position: fixed;        bottom: 48px;        background: #fff;        width: 100%;        height: 220px;        text-align: center;        padding: 8px;        box-sizing: border-box;        border-top: 1px solid #efefef;    }        #ias_attachment.hidden {            display: none;        }        #ias_attachment-close {            position: absolute;            top: 8px;            right: 8px;        }        #ias_attachment #ias_attachment-preview img {            max-height: 100%;            max-width: 100%;        }    #ias_write {        background-color: #fff;        border-top: 1px solid #efefef;        height: 48px;        position: fixed;        bottom: 0;        left: 0;        width: 100%;    }    #ias_write input {        border: 0;        border-bottom: 1px solid #ff9800;        height: 31px;        left: 0;        margin: 0 48px;        outline: none;        padding: 8px 8px 0px 8px;        position: absolute;        top: 0;        width: 70%;        width: calc(100% - 122px);    }    #ias_write #ias_write-attachment svg {        position: absolute;        left: 12px;        top: 13px;    }    #ias_write #ias_write-attachment input#ias_write-attachment-uploadFile {        width: 24px;        margin: 0px 4px;        opacity: 0;        position: absolute;        top: 4px;        left: 0px;    }    #ias_write button {        background-color: #fff;        border: none;        position: fixed;        right: 12px;        bottom: 5px;        border-radius: 50%;        font-size: 24px;        width: 34px;        padding: 0;        overflow: hidden;        line-height: normal;    }    #ias-show {        background-color: #ff9800;        border-radius: 50%;        bottom: 16px;        box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, .12), 0 1px 1px 0 rgba(0, 0, 0, .24);        box-sizing: border-box;        color: #fff;        fill: #fff;        height: 56px;        padding: 16px;        position: fixed;        right: 16px;        width: 56px;    }</style>';
 		document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
 	}
 
@@ -173,17 +179,19 @@ function IASChat(config) {
 			e.preventDefault();
 		}
 
-		var text = e.srcElement.children[0].value
+		var text = e.srcElement.children[1].value
 
 		if(text === '') {
 			console.log('tried to send empty form. Rejected.');
 			return false;
 		}
 
-		// printMessage(text);
-		pushMessage(text);
-
-		clearForm();
+		if(attatchment !== null) {
+			upload(text);
+		} else {
+			pushMessage(text);
+			clearForm();
+		}
 	}
 
 	function printMessage(text, received) {
@@ -214,7 +222,7 @@ function IASChat(config) {
 	}
 
 	function clearForm() {
-		form.children[0].value = '';
+		form.children[1].value = '';
 	}
 
 	function pushMessage(text, img) {
@@ -259,6 +267,10 @@ function IASChat(config) {
 		// Check if is a photo
 		if(typeof(message.img) !== 'undefined') {
 			text = '<img src="' + message.img + '" />';
+			// If there is text with the image, add it
+			if(message.text !== '' || message.text !== ' ') {
+				text += '<br>' + message.text;
+			}
 		}
 
 		if(message.uid == uid) {
@@ -341,12 +353,54 @@ function IASChat(config) {
 	}
 
 
+	/* ###  ATTACH FILES ### */
+
+	function previewImage() {
+		var file = uploadFile.files[0];
+
+		if(!file) {
+			console.error('Empty file');
+			return false;
+		}
+
+		attatchment = file;
+
+		// Preview image
+		var reader = new FileReader();
+
+        reader.onload = function (e) {
+            // $('#blah').attr('src', e.target.result);
+        	attatchmentPreview.innerHTML = '<img src="' + e.target.result + '">';
+        }
+
+        reader.readAsDataURL(file);
+
+        // Show attachment preview
+        if (attach.classList) {
+			attach.classList.remove('hidden');
+		} else {
+			attach.className = attach.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+		}
+	}
+
+	function closeImage() {
+		attatchment = null;
+		attatchmentPreview.innerHTML = 'Loading preview...';
+
+		if (attach.classList) {
+			attach.classList.add('hidden');
+		} else {
+			attach.className += ' ' + 'hidden';
+		}
+	}
+
+
 	/* ### UPLOAD FILES ### */
 
-	function upload() {
+	function upload(text) {
 
 		// File or Blob named mountains.jpg
-		var file = uploadFile.files[0];
+		var file = attatchment; // uploadFile.files[0];
 
 		if(!file) {
 			console.error('Empty file');
@@ -427,10 +481,16 @@ function IASChat(config) {
 			}, function() {
 				// Upload completed successfully, now we can get the download URL
 				var downloadURL = uploadTask.snapshot.downloadURL;
-				console.log('Fille successfully uploaded to:');
-				console.log(downloadURL);
+
+				console.log(text);
+
+				if(typeof(text) === 'undefined') {
+					text = '';
+				}
 				
-				pushMessage('', downloadURL)
+				pushMessage(text, downloadURL);
+				closeImage();
+				clearForm();
 			});
 	}
 
