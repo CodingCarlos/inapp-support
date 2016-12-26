@@ -217,13 +217,18 @@ function IASChat(config) {
 		form.children[0].value = '';
 	}
 
-	function pushMessage(text) {
+	function pushMessage(text, img) {
+
 		var msg = {
 			uid: uid,
 			text: text,
 			timestamp: new Date().getTime(),
 			reverseTimestamp: 0 - Number(new Date().getTime())
 		};
+
+		if(typeof(img) !== 'undefined') {
+			msg.img = img;
+		}
 
 		firebase.database().ref('messages/' + cid).push(msg);
 
@@ -249,11 +254,17 @@ function IASChat(config) {
 	function receiveMessage(data) {
 		var key = data.key;
 		var message = data.val();
+		var text = message.text;
+
+		// Check if is a photo
+		if(typeof(message.img) !== 'undefined') {
+			text = '<img src="' + message.img + '" />';
+		}
 
 		if(message.uid == uid) {
-			printMessage(message.text);
+			printMessage(text);
 		} else {
-			printMessage(message.text, true);
+			printMessage(text, true);
 		}
 	}
 
@@ -273,6 +284,8 @@ function IASChat(config) {
 		} else {
 			ias.className = ias.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
 		}
+
+		scrollDown();
 
 		// Also set url hash to true;
 		addUrlHash();
@@ -416,7 +429,8 @@ function IASChat(config) {
 				var downloadURL = uploadTask.snapshot.downloadURL;
 				console.log('Fille successfully uploaded to:');
 				console.log(downloadURL);
-				console.log('Would be a good moment to add a message including the file url...');
+				
+				pushMessage('', downloadURL)
 			});
 	}
 
@@ -443,6 +457,8 @@ function IASChat(config) {
 		
 		return extension;
 	}
+
+
 
 }
 

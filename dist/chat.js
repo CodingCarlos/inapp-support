@@ -146,7 +146,7 @@ function IASChat(config) {
 		}
 
 		// Also add the styles from css/style.css
-		ias += '<style>    #ias {        font-family: \'Roboto\',\'Helvetica\',\'Arial\',sans-serif!important;        position: fixed;        top: 0;        left: 0;        height: 100%;        width: 100%;        z-index: 999    }    #ias.hidden {        display: none    }    #ias_topbar {        background-color: #ff9800;        color: #fff;        fill: #fff;        height: 56px;        width: 100%    }    #ias_topbar #ias_topbar-pic {        padding: 8px 16px;        width: 40px;        height: 40px;        float: left    }    #ias_topbar #ias_topbar-pic img {        height: 100%;        border-radius: 50%    }    #ias_topbar #ias_topbar-text {        float: left;        margin-left: 6px;        margin-top: 14px;        font-size: 24px;    }    #ias_topbar #ias_topbar-close {        color: #fff;        float: right;        font-size: 24px;        margin: 16px 16px 0 0    }    #ias_messages {        background: #f7f8fb;        height: calc(100% - 117px);        overflow: auto;        padding-top: 12px    }    .ias_message {        margin: 4px 8px;        padding: 4px 12px    }    .ias_message-sent {        text-align: right    }    .ias_message span {        background-color: #fff;        padding: 4px 12px;        border-radius: 5px 5px 0 5px;        box-shadow: 1px 1px 5px rgba(0, 0, 0, .1);        color: #333    }    #ias_write {        background-color: #fff;        border-top: 1px solid #efefef;        height: 48px;        position: fixed;        bottom: 0;        left: 0;        width: 100%    }    #ias_write input {        border: 0;        border-bottom: 1px solid #ff9800;        height: 31px;        margin: 0 16px;        outline: none;        padding: 8px 8px 0px 8px;        width: 85%;        width: calc(100% - 96px)    }    #ias_write button {        background-color: #fff;        border: none;        position: fixed;        right: 12px;        bottom: 5px;        border-radius: 50%;        font-size: 24px;        width: 34px;        padding: 0;        overflow: hidden;        line-height: normal    }    #ias_write button img {        width: 70%    }    #ias-show {        background-color: #ff9800;        border-radius: 50%;        bottom: 16px;        box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, .12), 0 1px 1px 0 rgba(0, 0, 0, .24);        box-sizing: border-box;        color: #fff;        fill: #fff;        height: 56px;        padding: 16px;        position: fixed;        right: 16px;        width: 56px    }</style>';
+		ias += '<style>    #ias {        font-family: \'Roboto\',\'Helvetica\',\'Arial\',sans-serif!important;        position: fixed;        top: 0;        left: 0;        height: 100%;        width: 100%;        z-index: 999;    }    #ias.hidden {        display: none;    }    #ias_topbar {        background-color: #ff9800;        color: #fff;        fill: #fff;        height: 56px;        width: 100%;    }    #ias_topbar #ias_topbar-pic {        padding: 8px 16px;        width: 40px;        height: 40px;        float: left;    }    #ias_topbar #ias_topbar-pic img {        height: 100%;        border-radius: 50%;    }    #ias_topbar #ias_topbar-text {        float: left;        margin-left: 6px;        margin-top: 14px;        font-size: 24px;    }    #ias_topbar #ias_topbar-close {        color: #fff;        float: right;        font-size: 24px;        margin: 16px 16px 0 0;    }    #ias_messages {        background: #f7f8fb;        height: calc(100% - 117px);        overflow: auto;        padding-top: 12px;    }    .ias_message {        margin: 4px 8px;        padding: 4px 12px;    }    .ias_message-sent {        text-align: right;    }    .ias_message span {        background-color: #fff;        padding: 4px 12px;        border-radius: 5px 5px 0 5px;        box-shadow: 1px 1px 5px rgba(0, 0, 0, .1);        color: #333;        display: inline-block;    }        .ias_message span img {            margin: 8px 0 4px;            max-width: 300px;            max-height: 264px;        }    #ias_write {        background-color: #fff;        border-top: 1px solid #efefef;        height: 48px;        position: fixed;        bottom: 0;        left: 0;        width: 100%;    }    #ias_write input {        border: 0;        border-bottom: 1px solid #ff9800;        height: 31px;        margin: 0 16px;        outline: none;        padding: 8px 8px 0px 8px;        width: 85%;        width: calc(100% - 96px);    }    #ias_write button {        background-color: #fff;        border: none;        position: fixed;        right: 12px;        bottom: 5px;        border-radius: 50%;        font-size: 24px;        width: 34px;        padding: 0;        overflow: hidden;        line-height: normal;    }    #ias_write button img {        width: 70%;    }    #ias-show {        background-color: #ff9800;        border-radius: 50%;        bottom: 16px;        box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, .12), 0 1px 1px 0 rgba(0, 0, 0, .24);        box-sizing: border-box;        color: #fff;        fill: #fff;        height: 56px;        padding: 16px;        position: fixed;        right: 16px;        width: 56px;    }</style>';
 		document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
 	}
 
@@ -217,13 +217,18 @@ function IASChat(config) {
 		form.children[0].value = '';
 	}
 
-	function pushMessage(text) {
+	function pushMessage(text, img) {
+
 		var msg = {
 			uid: uid,
 			text: text,
 			timestamp: new Date().getTime(),
 			reverseTimestamp: 0 - Number(new Date().getTime())
 		};
+
+		if(typeof(img) !== 'undefined') {
+			msg.img = img;
+		}
 
 		firebase.database().ref('messages/' + cid).push(msg);
 
@@ -249,11 +254,17 @@ function IASChat(config) {
 	function receiveMessage(data) {
 		var key = data.key;
 		var message = data.val();
+		var text = message.text;
+
+		// Check if is a photo
+		if(typeof(message.img) !== 'undefined') {
+			text = '<img src="' + message.img + '" />';
+		}
 
 		if(message.uid == uid) {
-			printMessage(message.text);
+			printMessage(text);
 		} else {
-			printMessage(message.text, true);
+			printMessage(text, true);
 		}
 	}
 
@@ -273,6 +284,8 @@ function IASChat(config) {
 		} else {
 			ias.className = ias.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
 		}
+
+		scrollDown();
 
 		// Also set url hash to true;
 		addUrlHash();
@@ -416,7 +429,8 @@ function IASChat(config) {
 				var downloadURL = uploadTask.snapshot.downloadURL;
 				console.log('Fille successfully uploaded to:');
 				console.log(downloadURL);
-				console.log('Would be a good moment to add a message including the file url...');
+				
+				pushMessage('', downloadURL)
 			});
 	}
 
@@ -443,6 +457,8 @@ function IASChat(config) {
 		
 		return extension;
 	}
+
+
 
 }
 
