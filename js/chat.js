@@ -19,7 +19,7 @@ function IASChat(config) {
 	var container = config.container || null;
 	var hashSign = config.hashSign || '?';
 	var uploadFiles = config.uploadFiles || true;
-	var onlyImages = config.onlyImages || true;
+	var onlyPictures = config.onlyPictures || true;
 
 	// Prepare interface
 	printInterface(container);
@@ -208,7 +208,7 @@ function IASChat(config) {
 
 		var text = e.srcElement.children[1].value
 
-		if(text === '') {
+		if(text === '' && attatchment === null) {
 			console.log('tried to send empty form. Rejected.');
 			return false;
 		}
