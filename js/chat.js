@@ -18,6 +18,8 @@ function IASChat(config) {
 	var defaultSupportPic = config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
 	var container = config.container || null;
 	var hashSign = config.hashSign || '?';
+	var uploadFiles = config.uploadFiles || true;
+	var onlyPictures = config.onlyPictures || true;
 
 	// Prepare interface
 	printInterface(container);
@@ -169,6 +171,13 @@ function IASChat(config) {
 
 		// Form colors
 		form.children[0].style.borderColor = inputBorderColor;
+
+		// Upload form buttons
+		if(!uploadFiles) {
+			form.children[0].style.display = 'none';
+			form.children[1].style.margin = '0 16px';
+			form.children[1].style.width = 'calc(100% - 88px)';
+		}
 	}
 
 
@@ -199,7 +208,7 @@ function IASChat(config) {
 
 		var text = e.srcElement.children[1].value
 
-		if(text === '') {
+		if(text === '' && attatchment === null) {
 			console.log('tried to send empty form. Rejected.');
 			return false;
 		}
@@ -419,43 +428,48 @@ function IASChat(config) {
 
 		// File or Blob named mountains.jpg
 		var file = attatchment; // uploadFile.files[0];
+		var metadata;
 
 		if(!file) {
 			console.error('Empty file');
 			return false;
 		}
 
-		var extension = validateExtension(file);
+		if(onlyPictures) {
 
-		if(extension === null) {
-			console.error('Invalid file extension');
-			return false;
+			var extension = validateExtension(file);
+
+			if(extension === null) {
+				console.error('Invalid file extension');
+				return false;
+			}
+
+			var contentType = '';
+			switch(extension) {
+				case '.jpg':
+				case '.jpeg':
+					contentType = 'image/jpeg';
+					break;
+
+				case '.png':
+					contentType = 'image/png';
+					break;
+
+				case '.bmp':
+					contentType = 'image/bmp';
+					break;
+
+				case '.gif':
+					contentType = 'image/gif';
+					break;
+			}
+
+			// Create the file metadata
+			metadata = {
+				contentType: contentType
+			};
+			
 		}
-
-		var contentType = '';
-		switch(extension) {
-			case '.jpg':
-			case '.jpeg':
-				contentType = 'image/jpeg';
-				break;
-
-			case '.png':
-				contentType = 'image/png';
-				break;
-
-			case '.bmp':
-				contentType = 'image/bmp';
-				break;
-
-			case '.gif':
-				contentType = 'image/gif';
-				break;
-		}
-
-		// Create the file metadata
-		var metadata = {
-			contentType: contentType
-		};
 
 		// Upload file and metadata to the object 'images/mountains.jpg'
 		var uploadTask = storageRef.child('images/' + uid + '/' + file.name).put(file, metadata);
