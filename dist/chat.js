@@ -1,5 +1,4 @@
 
-
 function IASChat(config) {
 
 	// ALSO ADD CHAT SETTINGS TO CONFIG
@@ -17,9 +16,11 @@ function IASChat(config) {
 	var inputBorderColor = config.inputBorderColor || mainColor;
 	var defaultSupportName = config.defaultSupportName || 'Support chat';
 	var defaultSupportPic = config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
+	var container = config.container || null;
+	var hashSign = config.hashSign || '?';
 
 	// Prepare interface
-	printInterface();
+	printInterface(container);
 
 	// Prepare listeners
 	var show = document.getElementById('ias-show');
@@ -156,7 +157,24 @@ function IASChat(config) {
 
 		// Also add the styles from css/style.css
 		ias += '<style>#ias {font-family: \'Roboto\',\'Helvetica\',\'Arial\',sans-serif!important;position: fixed;top: 0;left: 0;height: 100%;width: 100%;z-index: 999;}#ias.hidden {display: none;}#ias_topbar {background-color: #ff9800;color: #fff;fill: #fff;height: 56px;width: 100%;}#ias_topbar #ias_topbar-pic {padding: 8px 16px;width: 40px;height: 40px;float: left;}#ias_topbar #ias_topbar-pic img {height: 100%;border-radius: 50%;}#ias_topbar #ias_topbar-text {float: left;margin-left: 6px;margin-top: 14px;font-size: 24px;}#ias_topbar #ias_topbar-close {color: #fff;float: right;font-size: 24px;margin: 16px 16px 0 0;}#ias_messages {background: #f7f8fb;height: calc(100% - 117px);overflow: auto;padding-top: 12px;}.ias_message {margin: 4px 8px;padding: 4px 12px;}.ias_message-sent {text-align: right;}.ias_message span {background-color: #fff;padding: 4px 12px;border-radius: 5px 5px 0 5px;box-shadow: 1px 1px 5px rgba(0, 0, 0, .1);color: #333;display: inline-block;}.ias_message span img {margin: 8px 0 4px;max-width: 300px;max-height: 264px;}#ias_attachment {position: fixed;bottom: 48px;background: #fff;width: 100%;height: 220px;text-align: center;padding: 8px;box-sizing: border-box;border-top: 1px solid #efefef;}#ias_attachment.hidden {display: none;}#ias_attachment-close {position: absolute;top: 8px;right: 8px;}#ias_attachment #ias_attachment-preview img {max-height: 100%;max-width: 100%;}#ias_write {background-color: #fff;border-top: 1px solid #efefef;height: 48px;position: fixed;bottom: 0;left: 0;width: 100%;}#ias_write input {border: 0;border-bottom: 1px solid #ff9800;height: 31px;left: 0;margin: 0 48px;outline: none;padding: 8px 8px 0px 8px;position: absolute;top: 0;width: 70%;width: calc(100% - 122px);}#ias_write #ias_write-attachment svg {position: absolute;left: 12px;top: 13px;}#ias_write #ias_write-attachment input#ias_write-attachment-uploadFile {width: 24px;margin: 0px 4px;opacity: 0;position: absolute;top: 4px;left: 0px;}#ias_write button {background-color: #fff;border: none;position: fixed;right: 12px;bottom: 5px;border-radius: 50%;font-size: 24px;width: 34px;padding: 0;overflow: hidden;line-height: normal;}#ias-show {background-color: #ff9800;border-radius: 50%;bottom: 16px;box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, .12), 0 1px 1px 0 rgba(0, 0, 0, .24);box-sizing: border-box;color: #fff;fill: #fff;height: 56px;padding: 16px;position: fixed;right: 16px;width: 56px;}</style>';
-		document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
+
+		var printplace = null;
+
+		if(typeof(container) !== 'undefined' && container !== null) {
+			if(container.indexOf('#') !== -1) {
+				container = container.slice(1);
+				printplace = document.getElementById(container);
+			} else if(container.indexOf('.') !== -1) {
+				container = container.slice(1);
+				printplace = document.getElementsByClassName(container)[0];
+			}
+		}
+
+		if(printplace === null) {
+			printplace = document.getElementsByTagName('body')[0];
+		} 
+		
+		printplace.insertAdjacentHTML('beforeend', ias);
 	}
 
 	function customizeInterfaze() {
@@ -357,7 +375,7 @@ function IASChat(config) {
 		if(!visibilityUrlHash()) {
 			if(window.location.hash) {
 				if(window.location.hash.indexOf('ias=true') === -1) {
-					window.location.hash += '&ias=true'; 
+					window.location.hash +=  hashSign + 'ias=true'; 
 				}
 			} else {
 				window.location.hash += '#ias=true'; 
@@ -367,8 +385,8 @@ function IASChat(config) {
 
 	function remUrlHash() {
 		if(window.location.hash) {
-			if(window.location.hash.indexOf('&ias=true') !== -1) {
-				window.location.hash = window.location.hash.replace('&ias=true', ''); 
+			if(window.location.hash.indexOf( hashSign + 'ias=true') !== -1) {
+				window.location.hash = window.location.hash.replace( hashSign + 'ias=true', ''); 
 			} else if(window.location.hash.indexOf('#ias=true') !== -1) {
 				window.location.hash = window.location.hash.replace('ias=true', ''); 
 			}
@@ -543,4 +561,3 @@ function IASChat(config) {
 
 
 }
-

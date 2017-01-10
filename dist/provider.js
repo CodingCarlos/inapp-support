@@ -1,15 +1,29 @@
+
 function IASChatProvider(config) {
 
 	var uid = config.uid;
 	var name = config.name;
 	var pic = config.pic
+	var container = config.container;
+	var mainColor = config.mainColor || '#ff9800'
+	var textColor = config.textColor || '#fff'
 	var chat = new IASChat({
 		uid: uid,
 		name: name,
-		button: false
+		button: config.button || false,
+		mainColor: mainColor,
+		textColor: textColor,
+		topbarBg: config.topbarBg || mainColor,
+		topbarColor: config.topbarColor || textColor,
+		buttonBg: config.buttonBg || mainColor,
+		buttonColor: config.buttonColor || textColor,
+		inputBorderColor: config.inputBorderColor || mainColor,
+		defaultSupportName: config.defaultSupportName || 'Support chat',
+		defaultSupportPic: config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg',
+		container: config.chatContainer,
+		hashSign: config.hashSign
 	});
 	var cid;
-	var container = config.container;
 
 	var setSupporterBind = setSupporter.bind(this);
 
