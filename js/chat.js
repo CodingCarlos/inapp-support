@@ -19,6 +19,7 @@ function IASChat(config) {
 	var container = config.container || null;
 	var hashSign = config.hashSign || '?';
 	var uploadFiles = config.uploadFiles || true;
+	var onlyImages = config.onlyImages || true;
 
 	// Prepare interface
 	printInterface(container);
@@ -427,43 +428,48 @@ function IASChat(config) {
 
 		// File or Blob named mountains.jpg
 		var file = attatchment; // uploadFile.files[0];
+		var metadata;
 
 		if(!file) {
 			console.error('Empty file');
 			return false;
 		}
 
-		var extension = validateExtension(file);
+		if(onlyPictures) {
 
-		if(extension === null) {
-			console.error('Invalid file extension');
-			return false;
+			var extension = validateExtension(file);
+
+			if(extension === null) {
+				console.error('Invalid file extension');
+				return false;
+			}
+
+			var contentType = '';
+			switch(extension) {
+				case '.jpg':
+				case '.jpeg':
+					contentType = 'image/jpeg';
+					break;
+
+				case '.png':
+					contentType = 'image/png';
+					break;
+
+				case '.bmp':
+					contentType = 'image/bmp';
+					break;
+
+				case '.gif':
+					contentType = 'image/gif';
+					break;
+			}
+
+			// Create the file metadata
+			metadata = {
+				contentType: contentType
+			};
+			
 		}
-
-		var contentType = '';
-		switch(extension) {
-			case '.jpg':
-			case '.jpeg':
-				contentType = 'image/jpeg';
-				break;
-
-			case '.png':
-				contentType = 'image/png';
-				break;
-
-			case '.bmp':
-				contentType = 'image/bmp';
-				break;
-
-			case '.gif':
-				contentType = 'image/gif';
-				break;
-		}
-
-		// Create the file metadata
-		var metadata = {
-			contentType: contentType
-		};
 
 		// Upload file and metadata to the object 'images/mountains.jpg'
 		var uploadTask = storageRef.child('images/' + uid + '/' + file.name).put(file, metadata);
