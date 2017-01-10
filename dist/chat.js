@@ -18,6 +18,7 @@ function IASChat(config) {
 	var defaultSupportPic = config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
 	var container = config.container || null;
 	var hashSign = config.hashSign || '?';
+	var uploadFiles = config.uploadFiles || true;
 
 	// Prepare interface
 	printInterface(container);
@@ -169,6 +170,13 @@ function IASChat(config) {
 
 		// Form colors
 		form.children[0].style.borderColor = inputBorderColor;
+
+		// Upload form buttons
+		if(!uploadFiles) {
+			form.children[0].style.display = 'none';
+			form.children[1].style.margin = '0 16px';
+			form.children[1].style.width = 'calc(100% - 88px)';
+		}
 	}
 
 
