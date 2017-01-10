@@ -73,29 +73,6 @@ function IASChat(config) {
 		cid: cid
 	}
 
-	/* ### GENERATE DUMMY USER DATA ### */
-
-	function generateUserData(cid){
-		var dummyData = true
-		if(dummyData){
-	        var xmlHttp = new XMLHttpRequest();
-	
-	        xmlHttp.onreadystatechange = function() {
-	
-	            if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-	            	var profileData = JSON.parse(xmlHttp.responseText)
-			        firebase.database().ref('users/' + cid).update({profile: profileData.results[0]});
-	            } else if (xmlHttp.readyState === 4 && xmlHttp.status === 404) {
-	                console.error("ERROR! 404");
-	                console.info(JSON.parse(xmlHttp.responseText));
-	            }
-	        };
-	        xmlHttp.open("GET", "https://randomuser.me/api/", true);
-	        xmlHttp.send();
-			
-		}
-	}	
-
 	/* ### Set chat properties ### */
 
 	function setUser(config) {
