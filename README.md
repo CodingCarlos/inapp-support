@@ -47,14 +47,13 @@ To configure the chat, just use the object passed on IASChat instantiation. *Bol
  - hashSign: String Symbol or string to add before url hash when chat open (Default: '?'. I.e.: url#existentHash**?**ias=true)
  - defaultSupportName: String Default support name (if no supporter assigned)
  - defaultSupportPic: String Default support picture (if no supporter assigned)
+ - uploadFiles: Boolean Enable or disable the option to upload and send files (Default: true)
+ - onlyPictures: Boolean Allow only pictures, or all file types (Default: true)
 
 In IASChatProvider, there are some extra features:
  - container: String Container for support panel (*#identifier* or *.className*. Default: *body*)
  - chatContainer: String Container for chat (*#identifier* or *.className*. Default: *body* or support container)
 
-In the future, early future, I hope to add...
- - uploadFiles: Boolean Enable or disable the option to upload and send pictures.
- - onlyPictures: Boolean Allow only pictures, or all file types.
  
 *I'm open to any suggestion or request for more configuration params. Don't hesitate to open a new Issue*
 
@@ -118,9 +117,6 @@ Initialize the support user, and done.
 ### Secure the panel
 This is your work. Support pannel in demo folder is not really a support panel, but a demo. This is not a fully control panel app, just a support chat "component" to add to your existing app.
 
-  
-## Responsiveness
-Nope, right now is not desktop/tablet responsive, just mobile, but I'm doing my best to add larger screen support. 
 
 ## Contribute
 You can use this code as you like. If you find a bug, or want to ask for a feature, just open an issue, and we'll do our best. If you can fix it, do a pull request to ``dev`` branch, and we promise to review it as fast as possible to merge it. 
