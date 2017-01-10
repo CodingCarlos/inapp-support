@@ -44,12 +44,20 @@ To configure the chat, just use the object passed on IASChat instantiation. *Bol
  - buttonBg: Color Show button background color
  - buttonColor: Color Show button text/icon color
  - inputBorderColor: Color Chat text input border bottom color
+ - container: String Container for chat (*#identifier* or *.className*)
+ - hashSign: String Symbol or string to add before url hash when chat open (Default: '?'. I.e.: url#existentHash**?**ias=true)
  - defaultSupportName: String Default support name (if no supporter assigned)
  - defaultSupportPic: String Default support picture (if no supporter assigned)
 
-In the future, early future, I hope...
+In IASChatProvider, there are some extra features:
+ - container: String Container for support panel (*#identifier* or *.className*. Default: *body*)
+ - chatContainer: String Container for chat (*#identifier* or *.className*. Default: *body* or support container)
+
+In the future, early future, I hope to add...
  - uploadFiles: Boolean Enable or disable the option to upload and send pictures.
  - onlyPictures: Boolean Allow only pictures, or all file types.
+ 
+*I'm open to any suggestion or request for more configuration params. Don't hesitate to open a new Issue*
 
 ### firebase
 Create a new firebase project (or use a existing one), and add the configuration script to your code, if possible, before including chat.js.
