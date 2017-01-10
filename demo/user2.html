@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html>
 <head>
@@ -30,15 +31,31 @@
 
 	<!-- App Styling -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-	<link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
 
+	<h1>User side support</h1>
 
 	<!-- Firebase -->
-
 	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
-	<script src="js/firebase.js"></script>
+	<script src="../js/firebase.js"></script>
+
+	<!-- Include IASChat -->
+	<script src="../dist/chat.js"></script>
+
+	<!-- Main working -->
+	<script type="text/javascript">	
+	window.onload = function() {
+		window.IASChat = new IASChat({
+			// uid: 1235, 
+			// name: 'santos',
+			uid: 1239, 
+			name: 'Joe',
+			pic: 'https://s3.amazonaws.com/uifaces/faces/twitter/c_southam/128.jpg',
+			button: true
+		});
+	};
+	</script>	
 
 </body>
 </html>

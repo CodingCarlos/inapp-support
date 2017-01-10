@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>InApp Support</title>
+
+	<!-- Disable tap highlight on IE -->
+	<meta name="msapplication-tap-highlight" content="no">
+
+	<!-- Web Application Manifest -->
+	<!-- <link rel="manifest" href="manifest.json"> -->
+
+	<!-- Add to homescreen for Chrome on Android -->
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="application-name" content="inApp support">
+	<meta name="theme-color" content="#303F9F">
+
+	<!-- Add to homescreen for Safari on iOS -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="inApp Support">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#303F9F">
+
+	<!-- Tile icon for Win8 -->
+	<meta name="msapplication-TileColor" content="#3372DF">
+	<meta name="msapplication-navbutton-color" content="#303F9F">
+
+
+
+	<!-- App Styling -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+</head>
+<body>
+
+<h1>Support side chat</h1>
+
+<div id="support">
+</div>
+
+	<!-- Firebase -->
+	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
+	<script src="../js/firebase.js"></script>
+
+	<!-- Include IASChat -->
+	<script src="../dist/chat.js"></script>
+	<script src="../dist/provider.js"></script>
+	<!-- <script src="js/provider.js"></script> -->
+
+	<!-- Main working -->
+	<script type="text/javascript">	
+	window.onload = function() {
+		window.IASChatProvider = new IASChatProvider({
+			uid: 4321, 
+			name: 'support',
+			pic: 'https://s3.amazonaws.com/uifaces/faces/twitter/rem/128.jpg',
+			container: '#support'
+		});
+	};
+	</script>	
+
+</body>
+</html>

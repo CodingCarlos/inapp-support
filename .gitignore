@@ -1,2 +1,6 @@
+# --- Node modules ---------------------
+node_modules/
+
 # -- Firebase config -------------------
 js/firebase.js
+dist/firebase.js
