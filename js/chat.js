@@ -1,5 +1,4 @@
 
-
 function IASChat(config) {
 
 	// ALSO ADD CHAT SETTINGS TO CONFIG
@@ -17,9 +16,11 @@ function IASChat(config) {
 	var inputBorderColor = config.inputBorderColor || mainColor;
 	var defaultSupportName = config.defaultSupportName || 'Support chat';
 	var defaultSupportPic = config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
+	var container = config.container || null;
+	var hashSign = config.hashSign || '?';
 
 	// Prepare interface
-	printInterface();
+	printInterface(container);
 
 	// Prepare listeners
 	var show = document.getElementById('ias-show');
@@ -156,7 +157,24 @@ function IASChat(config) {
 
 		// Also add the styles from css/style.css
 		ias += '<%- data.iasStyle %>';
-		document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', ias);
+
+		var printplace = null;
+
+		if(typeof(container) !== 'undefined' && container !== null) {
+			if(container.indexOf('#') !== -1) {
+				container = container.slice(1);
+				printplace = document.getElementById(container);
+			} else if(container.indexOf('.') !== -1) {
+				container = container.slice(1);
+				printplace = document.getElementsByClassName(container)[0];
+			}
+		}
+
+		if(printplace === null) {
+			printplace = document.getElementsByTagName('body')[0];
+		} 
+		
+		printplace.insertAdjacentHTML('beforeend', ias);
 	}
 
 	function customizeInterfaze() {
@@ -357,7 +375,7 @@ function IASChat(config) {
 		if(!visibilityUrlHash()) {
 			if(window.location.hash) {
 				if(window.location.hash.indexOf('ias=true') === -1) {
-					window.location.hash += '&ias=true'; 
+					window.location.hash +=  hashSign + 'ias=true'; 
 				}
 			} else {
 				window.location.hash += '#ias=true'; 
@@ -367,8 +385,8 @@ function IASChat(config) {
 
 	function remUrlHash() {
 		if(window.location.hash) {
-			if(window.location.hash.indexOf('&ias=true') !== -1) {
-				window.location.hash = window.location.hash.replace('&ias=true', ''); 
+			if(window.location.hash.indexOf( hashSign + 'ias=true') !== -1) {
+				window.location.hash = window.location.hash.replace( hashSign + 'ias=true', ''); 
 			} else if(window.location.hash.indexOf('#ias=true') !== -1) {
 				window.location.hash = window.location.hash.replace('ias=true', ''); 
 			}
@@ -543,4 +561,3 @@ function IASChat(config) {
 
 
 }
-
