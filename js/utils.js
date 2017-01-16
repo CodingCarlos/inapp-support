@@ -1,25 +1,10 @@
 function validateExtension(file) {
+  const fileName = file.name;
+  const fileExtension =fileName.substr(fileName.lastIndexOf('.')).toLowerCase();
 
-  var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".gif", ".png"];
-  var fileName = file.name;
+  const _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".gif", ".png"];
 
-  var extension = null;
-
-  if (fileName.length > 0) {
-    
-    for (var j = 0; j < _validFileExtensions.length; j++) {
-      var thisExt = _validFileExtensions[j];
-
-      // Check the extension is valid
-      if (fileName.substr(fileName.length - thisExt.length, thisExt.length).toLowerCase() == thisExt.toLowerCase()) {
-        extension = thisExt;
-        break;
-      }
-    }
-
-  }
-  
-  return extension;
+  return _validFileExtensions.find((ext) => fileExtension === ext) || null;
 }
 
 module.exports = {validateExtension};
