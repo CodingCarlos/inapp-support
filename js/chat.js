@@ -43,6 +43,8 @@ function IASChat(config) {
 
 	var attatchment = null;
 
+	var lastHash = '';
+
 	// Listen event submit
 	if(show) {
 		show.addEventListener('click', showIAS.bind(this));
@@ -66,6 +68,22 @@ function IASChat(config) {
 	} else {
 		hideIAS();
 	}
+
+	// Detect hash change to update IAS visibility
+	// IMPROVEMENT: Do a recursive function, that start on IAS show, and stop on hide
+	setInterval(function() {		
+		if(window.location.hash !== lastHash) {
+
+			lastHash = window.location.hash;
+
+			var isHash = visibilityUrlHash();
+			if(isHash) {
+				showIAS();
+			} else {
+				hideIAS();
+			}
+		}
+	}, 300);
 
 
 	return {
@@ -371,10 +389,15 @@ function IASChat(config) {
 
 	function remUrlHash() {
 		if(window.location.hash) {
-			if(window.location.hash.indexOf( hashSign + 'ias=true') !== -1) {
-				window.location.hash = window.location.hash.replace( hashSign + 'ias=true', ''); 
-			} else if(window.location.hash.indexOf('#ias=true') !== -1) {
-				window.location.hash = window.location.hash.replace('ias=true', ''); 
+
+			if(lastHash.indexOf( hashSign + 'ias=true') !== -1 || lastHash.indexOf('#ias=true') !== -1) {
+				window.history.back();
+			} else {
+				if(window.location.hash.indexOf( hashSign + 'ias=true') !== -1) {
+					window.location.hash = window.location.hash.replace( hashSign + 'ias=true', ''); 
+				} else if(window.location.hash.indexOf('#ias=true') !== -1) {
+					window.location.hash = window.location.hash.replace('ias=true', ''); 
+				}
 			}
 		}
 	}
