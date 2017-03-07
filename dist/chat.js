@@ -13,6 +13,7 @@ function IASChat(config) {
 	var topbarColor = config.topbarColor || textColor;
 	var buttonBg = config.buttonBg || mainColor;
 	var buttonColor = config.buttonColor || textColor;
+	var buttonIcon = config.buttonIcon || null;
 	var inputBorderColor = config.inputBorderColor || mainColor;
 	var defaultSupportName = config.defaultSupportName || 'Support chat';
 	var defaultSupportPic = config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
@@ -176,6 +177,16 @@ function IASChat(config) {
 			form.children[0].style.display = 'none';
 			form.children[1].style.margin = '0 16px';
 			form.children[1].style.width = 'calc(100% - 88px)';
+		}
+
+		// If changed button icon
+		if(buttonIcon) {
+			var icon = document.createElement('img');
+			icon.style.width = '24px';
+			icon.style.height = '24px';
+			icon.setAttribute('src', buttonIcon);
+			document.getElementById('ias-show').removeChild(document.getElementById('ias-show').firstChild);
+			document.getElementById('ias-show').appendChild(icon);
 		}
 	}
 

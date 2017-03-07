@@ -42,6 +42,7 @@ To configure the chat, just use the object passed on IASChat instantiation. *Bol
  - topbarColor: Color Chat topbar text and icons color
  - buttonBg: Color Show button background color
  - buttonColor: Color Show button text/icon color
+ - buttonIcon: String Image URI for the icon you want to add in the open button. SVG or PNG recommended, but all image types should work
  - inputBorderColor: Color Chat text input border bottom color
  - container: String Container for chat (*#identifier* or *.className*)
  - hashSign: String Symbol or string to add before url hash when chat open (Default: '?'. I.e.: url#existentHash**?**ias=true)
