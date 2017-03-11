@@ -21,12 +21,15 @@ function IASChat(config) {
 	var hashSign = config.hashSign || '?';
 	var uploadFiles = config.uploadFiles || true;
 	var onlyPictures = config.onlyPictures || true;
+	var onSend = config.onSend || null;
+	var onMessage = config.onMessage || null;
 
 	// Prepare interface
 	printInterface(container);
 
 	// Prepare listeners
 	var show = document.getElementById('ias-show');
+	var showNotifications = document.getElementById('ias-show-notifications');
 	var ias = document.getElementById('ias');
 	var topbar = document.getElementById('ias_topbar');
 	var close = document.getElementById('ias_topbar-close');
@@ -46,6 +49,10 @@ function IASChat(config) {
 
 	var lastHash = '';
 	var lastPage = '';
+
+	var user = null;
+	var lastMessage = {};
+
 
 	// Listen event submit
 	if(show) {
@@ -83,7 +90,19 @@ function IASChat(config) {
 		name = config.name || '';
 		pic = config.pic || '';
 
-		setChatData();
+		// Get chat info
+		userRef = firebase.database().ref('users/' + cid);
+		userRef.on('value', function(data) {
+
+			user = data.val();
+
+			lastMessage = user.lastMessage;
+			// console.log(lastMessage);
+			
+			setChatData();
+			setNotifications();
+		});
+
 
 		clearMessages();
 
@@ -96,10 +115,7 @@ function IASChat(config) {
 
 	function setChatData() {
 
-		userRef = firebase.database().ref('users/' + cid);
-		userRef.on('value', function(data) {
-			var key = data.key;
-			var user = data.val();
+		if(user) {
 
 			var printData = {
 				name: defaultSupportName,
@@ -118,8 +134,9 @@ function IASChat(config) {
 		
 			document.getElementById('ias_topbar-text').innerHTML = printData.name;
 			document.getElementById('ias_topbar-pic').firstChild.setAttribute('src', printData.pic);
-		});
-
+		} else {
+			setTimeout(setChatData, 100);
+		}
 	}
 
 
@@ -219,7 +236,7 @@ function IASChat(config) {
 		var text = e.srcElement.children[1].value
 
 		if(text === '' && attatchment === null) {
-			console.log('tried to send empty form. Rejected.');
+			console.warn('tried to send empty form. Rejected.');
 			return false;
 		}
 
@@ -278,6 +295,10 @@ function IASChat(config) {
 		firebase.database().ref('messages/' + cid).push(msg);
 
 		firebase.database().ref('users/' + cid).once('value').then(function(snapshot) {		
+			
+			var userLastMsg = msg;
+			userLastMsg.read = false;
+
 			if(!snapshot.val()) {
 				// Add user
 				firebase.database().ref('users/' + cid).set({
@@ -285,10 +306,10 @@ function IASChat(config) {
 					pic: pic,
 					isSupporter: false,
 					supporter: -1,
-					lastMessage: msg
+					lastMessage: userLastMsg
 				});
 			} else {
-				firebase.database().ref('users/' + cid).update({lastMessage: msg});
+				firebase.database().ref('users/' + cid).update({lastMessage: userLastMsg});
 				if(!snapshot.val().profile) {
 					generateUserData(cid)
 				}
@@ -312,8 +333,44 @@ function IASChat(config) {
 
 		if(message.uid == uid) {
 			printMessage(text);
+			if(typeof onSend === 'function' && message.timestamp > lastMessage.timestamp) {
+				onSend(message, key);
+			}
 		} else {
 			printMessage(text, true);
+			
+			// If chat is open, set the message as read
+			if(!isHidden()) {
+				readLastMessage();
+			}
+
+			if(typeof onMessage === 'function' && message.timestamp > lastMessage.timestamp) {
+				onMessage(message, key);
+			}
+		}
+	}
+
+	function readLastMessage() {
+		firebase.database().ref('users/' + cid + '/lastMessage').update({read: true});
+	}
+
+	function setNotifications() {
+
+		// Only set notifications if button are enabled
+		if(button) {
+			if(lastMessage.uid !== uid && !lastMessage.read) {
+				if (showNotifications.classList) {
+					showNotifications.classList.remove('hidden');
+				} else {
+					showNotifications.className = showNotifications.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+				}
+			} else {
+				if (showNotifications.classList) {
+					showNotifications.classList.add('hidden');
+				} else {
+					showNotifications.className += ' ' + 'hidden';
+				}
+			}
 		}
 	}
 
@@ -338,6 +395,9 @@ function IASChat(config) {
 
 		// Also set url hash to true;
 		addUrlHash();
+
+		// And read last message
+		readLastMessage();
 	}
 
 	function hideIAS(e) {
@@ -353,6 +413,20 @@ function IASChat(config) {
 
 		// Also remove url hash to true;
 		remUrlHash();
+	}
+
+	function isHidden(e) {
+		if(typeof(e) !== 'undefined') {
+			e.preventDefault();
+		}
+
+		var className = 'hidden';
+
+		if (ias.classList) {
+			return ias.classList.contains(className);
+		} else {
+			return new RegExp('(^| )' + className + '( |$)', 'gi').test(ias.className);
+		}
 	}
 
 	/* ### URL Hash ### */

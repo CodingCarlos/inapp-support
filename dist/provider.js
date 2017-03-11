@@ -49,7 +49,7 @@ function IASChatProvider(config) {
 
 	function printInterface(container) {
 		// Compressed version of html/chat.html turned to string
-		var ias = '<div id=\"iasProvider\"><div id=\"iasProvider_unassigned-chat\"><h3>Unassigned Users:</h3><ul class=\"iasProvider_users-chat\"></ul></div><div id=\"iasProvider_assigned-chat\"><h3>Your Users:</h3><ul class=\"iasProvider_users-chat\"></ul></div></div><style>#iasProvider {font-family: \"Roboto\",\"Helvetica\",\"Arial\",sans-serif!important;}.iasProvider_users-chat {list-style: none;margin: 0;padding: 0;}.iasProvider_users-chat li div {display: inline-block;vertical-align: middle;}.iasProvider_users-chat li div.iasProvider_users-chat-pic {box-sizing: border-box;padding: 8px 16px;width: 72px;}.iasProvider_users-chat li div.iasProvider_users-chat-pic img {border-radius: 50%;height: 40px;width: 40px;}.iasProvider_users-chat li div.iasProvider_users-chat-name {font-size: 16px;}</style>'
+		var ias = '<div id=\"iasProvider\"><div id=\"iasProvider_unassigned-chat\"><h3>Unassigned Users:</h3><ul class=\"iasProvider_users-chat\"></ul></div><div id=\"iasProvider_assigned-chat\"><h3>Your Users:</h3><ul class=\"iasProvider_users-chat\"></ul></div></div><style>#iasProvider {font-family: \"Roboto\",\"Helvetica\",\"Arial\",sans-serif!important;}.iasProvider_users-chat {list-style: none;margin: 0;padding: 0;}.iasProvider_users-chat-unread {font-weight: bold;}.iasProvider_users-chat-message {font-weight: lighter;font-family: .8em;}.iasProvider_users-chat li div {display: inline-block;vertical-align: middle;}.iasProvider_users-chat li div.iasProvider_users-chat-pic {box-sizing: border-box;padding: 8px 16px;width: 72px;}.iasProvider_users-chat li div.iasProvider_users-chat-pic img {border-radius: 50%;height: 40px;width: 40px;}.iasProvider_users-chat li div.iasProvider_users-chat-name {font-size: 16px;}</style>'
 
 		// Also add the provider styles from css/provider-style.css
 		// ias += '';
@@ -101,10 +101,25 @@ function IASChatProvider(config) {
 
 		var supporter = data.supporter.uid || data.supporter;
 
+		var read = true;
+
+		if(typeof data.lastMessage !== 'undefined' && typeof data.lastMessage.read !== 'undefined' && !data.lastMessage.read) {
+			read = false;
+		}
+
 		var user = document.createElement('li');
 			user.setAttribute("data-cid", data.uid);
 			user.setAttribute("data-supporter", supporter);
+
+		if(read) {
 			user.innerHTML = '<div class="iasProvider_users-chat-pic"><img src="' + data.pic + '"></div><div class="iasProvider_users-chat-name">' + data.name + '</div>';
+		} else {
+			var message = data.lastMessage.text;
+			if(data.lastMessage.text.length > 20)
+				message = data.lastMessage.text.slice(0, 20) + '...';
+
+			user.innerHTML = '<div class="iasProvider_users-chat-pic"><img src="' + data.pic + '"></div><div class="iasProvider_users-chat-name iasProvider_users-chat-unread">' + data.name + '<br><span class="iasProvider_users-chat-message">' + message + '</span></div>';
+		}
 
 		user.addEventListener('click', usersChatManagement, false);
 

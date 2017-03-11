@@ -21,12 +21,15 @@ function IASChat(config) {
 	var hashSign = config.hashSign || '?';
 	var uploadFiles = config.uploadFiles || true;
 	var onlyPictures = config.onlyPictures || true;
+	var onSend = config.onSend || null;
+	var onMessage = config.onMessage || null;
 
 	// Prepare interface
 	printInterface(container);
 
 	// Prepare listeners
 	var show = document.getElementById('ias-show');
+	var showNotifications = document.getElementById('ias-show-notifications');
 	var ias = document.getElementById('ias');
 	var topbar = document.getElementById('ias_topbar');
 	var close = document.getElementById('ias_topbar-close');
@@ -46,6 +49,10 @@ function IASChat(config) {
 
 	var lastHash = '';
 	var lastPage = '';
+
+	var user = null;
+	var lastMessage = {};
+
 
 	// Listen event submit
 	if(show) {
@@ -83,7 +90,19 @@ function IASChat(config) {
 		name = config.name || '';
 		pic = config.pic || '';
 
-		setChatData();
+		// Get chat info
+		userRef = firebase.database().ref('users/' + cid);
+		userRef.on('value', function(data) {
+
+			user = data.val();
+
+			lastMessage = user.lastMessage;
+			// console.log(lastMessage);
+			
+			setChatData();
+			setNotifications();
+		});
+
 
 		clearMessages();
 
@@ -96,10 +115,7 @@ function IASChat(config) {
 
 	function setChatData() {
 
-		userRef = firebase.database().ref('users/' + cid);
-		userRef.on('value', function(data) {
-			var key = data.key;
-			var user = data.val();
+		if(user) {
 
 			var printData = {
 				name: defaultSupportName,
@@ -118,8 +134,9 @@ function IASChat(config) {
 		
 			document.getElementById('ias_topbar-text').innerHTML = printData.name;
 			document.getElementById('ias_topbar-pic').firstChild.setAttribute('src', printData.pic);
-		});
-
+		} else {
+			setTimeout(setChatData, 100);
+		}
 	}
 
 
@@ -131,11 +148,11 @@ function IASChat(config) {
 
 		// If shall show button, add it to interface (from html/show-button.html)
 		if(button) {
-			ias += '<div id=\"ias-show\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M19 2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h4l3 3 3-3h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.9 13 12.5 13 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z\" /></svg></div>'
+			ias += '<div id=\"ias-show\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M19 2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h4l3 3 3-3h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.9 13 12.5 13 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z\" /></svg><span id=\"ias-show-notifications\" class=\"hidden\"></span></div>'
 		}
 
 		// Also add the styles from css/style.css
-		ias += '<style>#ias {font-family: \'Roboto\',\'Helvetica\',\'Arial\',sans-serif!important;position: fixed;top: 0;left: 0;height: 100%;width: 100%;z-index: 999;}#ias.hidden {display: none;}#ias_topbar {background-color: #ff9800;color: #fff;fill: #fff;height: 56px;width: 100%;}#ias_topbar #ias_topbar-pic {padding: 8px 16px;width: 40px;height: 40px;float: left;}#ias_topbar #ias_topbar-pic img {height: 100%;border-radius: 50%;}#ias_topbar #ias_topbar-text {float: left;margin-left: 6px;margin-top: 14px;font-size: 24px;}#ias_topbar #ias_topbar-close {color: #fff;float: right;font-size: 24px;margin: 16px 16px 0 0;}#ias_messages {background: #f7f8fb;height: calc(100% - 117px);overflow: auto;padding-top: 12px;}.ias_message {margin: 4px 8px;padding: 4px 12px;}.ias_message-sent {text-align: right;}.ias_message span {background-color: #fff;padding: 4px 12px;border-radius: 5px 5px 0 5px;box-shadow: 1px 1px 5px rgba(0, 0, 0, .1);color: #333;display: inline-block;}.ias_message span img {margin: 8px 0 4px;max-width: 300px;max-height: 264px;}#ias_attachment {position: fixed;bottom: 48px;background: #fff;width: 100%;height: 220px;text-align: center;padding: 8px;box-sizing: border-box;border-top: 1px solid #efefef;}#ias_attachment.hidden {display: none;}#ias_attachment-close {position: absolute;top: 8px;right: 8px;}#ias_attachment #ias_attachment-preview img {max-height: 100%;max-width: 100%;}#ias_write {background-color: #fff;border-top: 1px solid #efefef;height: 48px;position: fixed;bottom: 0;left: 0;width: 100%;}#ias_write input {border: 0;border-bottom: 1px solid #ff9800;height: 31px;left: 0;margin: 0 48px;outline: none;padding: 8px 8px 0px 8px;position: absolute;top: 0;width: 70%;width: calc(100% - 122px);}#ias_write #ias_write-attachment svg {position: absolute;left: 12px;top: 13px;}#ias_write #ias_write-attachment input#ias_write-attachment-uploadFile {width: 24px;margin: 0px 4px;opacity: 0;position: absolute;top: 4px;left: 0px;}#ias_write button {background-color: #fff;border: none;position: fixed;right: 12px;bottom: 5px;border-radius: 50%;font-size: 24px;width: 34px;padding: 0;overflow: hidden;line-height: normal;}#ias-show {background-color: #ff9800;border-radius: 50%;bottom: 16px;box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, .12), 0 1px 1px 0 rgba(0, 0, 0, .24);box-sizing: border-box;color: #fff;fill: #fff;height: 56px;padding: 16px;position: fixed;right: 16px;width: 56px;}@media screen and (min-width: 842px) {#ias{height: 600px;width: 368px;position: fixed;right: 0;bottom: 0;top: auto;overflow: hidden;left: auto;}#ias_message {height: 483px;}#ias_attachment, #ias_write {position: absolute;}}</style>';
+		ias += '<style>#ias {font-family: \'Roboto\',\'Helvetica\',\'Arial\',sans-serif!important;position: fixed;top: 0;left: 0;height: 100%;width: 100%;z-index: 999;}#ias.hidden {display: none;}#ias_topbar {background-color: #ff9800;color: #fff;fill: #fff;height: 56px;width: 100%;}#ias_topbar #ias_topbar-pic {padding: 8px 16px;width: 40px;height: 40px;float: left;}#ias_topbar #ias_topbar-pic img {height: 100%;border-radius: 50%;}#ias_topbar #ias_topbar-text {float: left;margin-left: 6px;margin-top: 14px;font-size: 24px;}#ias_topbar #ias_topbar-close {color: #fff;float: right;font-size: 24px;margin: 16px 16px 0 0;}#ias_messages {background: #f7f8fb;height: calc(100% - 117px);overflow: auto;padding-top: 12px;}.ias_message {margin: 4px 8px;padding: 4px 12px;}.ias_message-sent {text-align: right;}.ias_message span {background-color: #fff;padding: 4px 12px;border-radius: 5px 5px 0 5px;box-shadow: 1px 1px 5px rgba(0, 0, 0, .1);color: #333;display: inline-block;}.ias_message span img {margin: 8px 0 4px;max-width: 300px;max-height: 264px;}#ias_attachment {position: fixed;bottom: 48px;background: #fff;width: 100%;height: 220px;text-align: center;padding: 8px;box-sizing: border-box;border-top: 1px solid #efefef;}#ias_attachment.hidden {display: none;}#ias_attachment-close {position: absolute;top: 8px;right: 8px;}#ias_attachment #ias_attachment-preview img {max-height: 100%;max-width: 100%;}#ias_write {background-color: #fff;border-top: 1px solid #efefef;height: 48px;position: fixed;bottom: 0;left: 0;width: 100%;}#ias_write input {border: 0;border-bottom: 1px solid #ff9800;height: 31px;left: 0;margin: 0 48px;outline: none;padding: 8px 8px 0px 8px;position: absolute;top: 0;width: 70%;width: calc(100% - 122px);}#ias_write #ias_write-attachment svg {position: absolute;left: 12px;top: 13px;}#ias_write #ias_write-attachment input#ias_write-attachment-uploadFile {width: 24px;margin: 0px 4px;opacity: 0;position: absolute;top: 4px;left: 0px;}#ias_write button {background-color: #fff;border: none;position: fixed;right: 12px;bottom: 5px;border-radius: 50%;font-size: 24px;width: 34px;padding: 0;overflow: hidden;line-height: normal;}#ias-show {background-color: #ff9800;border-radius: 50%;bottom: 16px;box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, .12), 0 1px 1px 0 rgba(0, 0, 0, .24);box-sizing: border-box;color: #fff;fill: #fff;height: 56px;padding: 16px;position: fixed;right: 16px;width: 56px;}#ias-show-notifications {height: 16px;width: 16px;background: red;position: absolute;left: 1px;top: 1px;border-radius: 50%;}#ias-show-notifications.hidden {display: none;}@media screen and (min-width: 842px) {#ias{height: 600px;width: 368px;position: fixed;right: 0;bottom: 0;top: auto;overflow: hidden;left: auto;}#ias_message {height: 483px;}#ias_attachment, #ias_write {position: absolute;}}</style>';
 
 		var printplace = null;
 
@@ -219,7 +236,7 @@ function IASChat(config) {
 		var text = e.srcElement.children[1].value
 
 		if(text === '' && attatchment === null) {
-			console.log('tried to send empty form. Rejected.');
+			console.warn('tried to send empty form. Rejected.');
 			return false;
 		}
 
@@ -278,6 +295,10 @@ function IASChat(config) {
 		firebase.database().ref('messages/' + cid).push(msg);
 
 		firebase.database().ref('users/' + cid).once('value').then(function(snapshot) {		
+			
+			var userLastMsg = msg;
+			userLastMsg.read = false;
+
 			if(!snapshot.val()) {
 				// Add user
 				firebase.database().ref('users/' + cid).set({
@@ -285,10 +306,10 @@ function IASChat(config) {
 					pic: pic,
 					isSupporter: false,
 					supporter: -1,
-					lastMessage: msg
+					lastMessage: userLastMsg
 				});
 			} else {
-				firebase.database().ref('users/' + cid).update({lastMessage: msg});
+				firebase.database().ref('users/' + cid).update({lastMessage: userLastMsg});
 				if(!snapshot.val().profile) {
 					generateUserData(cid)
 				}
@@ -312,8 +333,44 @@ function IASChat(config) {
 
 		if(message.uid == uid) {
 			printMessage(text);
+			if(typeof onSend === 'function' && message.timestamp > lastMessage.timestamp) {
+				onSend(message, key);
+			}
 		} else {
 			printMessage(text, true);
+			
+			// If chat is open, set the message as read
+			if(!isHidden()) {
+				readLastMessage();
+			}
+
+			if(typeof onMessage === 'function' && message.timestamp > lastMessage.timestamp) {
+				onMessage(message, key);
+			}
+		}
+	}
+
+	function readLastMessage() {
+		firebase.database().ref('users/' + cid + '/lastMessage').update({read: true});
+	}
+
+	function setNotifications() {
+
+		// Only set notifications if button are enabled
+		if(button) {
+			if(lastMessage.uid !== uid && !lastMessage.read) {
+				if (showNotifications.classList) {
+					showNotifications.classList.remove('hidden');
+				} else {
+					showNotifications.className = showNotifications.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+				}
+			} else {
+				if (showNotifications.classList) {
+					showNotifications.classList.add('hidden');
+				} else {
+					showNotifications.className += ' ' + 'hidden';
+				}
+			}
 		}
 	}
 
@@ -338,6 +395,9 @@ function IASChat(config) {
 
 		// Also set url hash to true;
 		addUrlHash();
+
+		// And read last message
+		readLastMessage();
 	}
 
 	function hideIAS(e) {
@@ -353,6 +413,20 @@ function IASChat(config) {
 
 		// Also remove url hash to true;
 		remUrlHash();
+	}
+
+	function isHidden(e) {
+		if(typeof(e) !== 'undefined') {
+			e.preventDefault();
+		}
+
+		var className = 'hidden';
+
+		if (ias.classList) {
+			return ias.classList.contains(className);
+		} else {
+			return new RegExp('(^| )' + className + '( |$)', 'gi').test(ias.className);
+		}
 	}
 
 	/* ### URL Hash ### */

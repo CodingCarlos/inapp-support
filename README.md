@@ -50,6 +50,8 @@ To configure the chat, just use the object passed on IASChat instantiation. *Bol
  - defaultSupportPic: String Default support picture (if no supporter assigned)
  - uploadFiles: Boolean Enable or disable the option to upload and send files (Default: true)
  - onlyPictures: Boolean Allow only pictures, or all file types (Default: true)
+ - onMessage: Function Execute a function on message recieved. Params message (all object) and key are passed to the function
+ - onSend: Function Execute a function when a message is sent. Params message (all object) and key are passed to the function
 
 In IASChatProvider, there are some extra features:
  - container: String Container for support panel (*#identifier* or *.className*. Default: *body*)
