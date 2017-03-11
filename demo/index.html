@@ -64,17 +64,17 @@
 			defaultSupportPic: 'http://lorempixel.com/100/100/people',
 			onMessage: myFunction,
 			onSend: function(msg, key) {
-				console.log('Sent message. Id stored: ' + key);
+				console.log('#################');
+				console.log('- Message sent! Key: ' + key);
 				console.log(msg)
+				console.log('#################');
 			}
 		});
 
 		function myFunction(message, key) {
 			console.log('--------------------');
-			console.log('- We got a message!');
+			console.log('- We got a message! key: ' + key);
 			console.log(message);
-			console.log('- key:');
-			console.log(key);
 			console.log('--------------------');
 		}
 	};

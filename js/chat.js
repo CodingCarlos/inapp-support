@@ -333,7 +333,7 @@ function IASChat(config) {
 
 		if(message.uid == uid) {
 			printMessage(text);
-			if(typeof onSend === 'function') {
+			if(typeof onSend === 'function' && message.timestamp > lastMessage.timestamp) {
 				onSend(message, key);
 			}
 		} else {
@@ -344,7 +344,7 @@ function IASChat(config) {
 				readLastMessage();
 			}
 
-			if(typeof onMessage === 'function') {
+			if(typeof onMessage === 'function' && message.timestamp > lastMessage.timestamp) {
 				onMessage(message, key);
 			}
 		}
