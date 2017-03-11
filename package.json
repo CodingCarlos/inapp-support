@@ -4,7 +4,7 @@
   "description": "HTML5 inApp support chat using your own firebase account",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
   "homepage": "https://github.com/CodingCarlos/inapp-support#readme",
   "devDependencies": {
     "browser-sync": "^2.18.2",
+    "chai": "^3.5.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
@@ -42,6 +43,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.9.1",
     "gulp-uglify": "^2.0.0",
+    "mocha": "^3.2.0",
     "run-sequence": "^1.2.2"
   }
 }
