@@ -48,7 +48,9 @@ function IASChat(config) {
 	var lastHash = '';
 	var lastPage = '';
 
+	var user = null;
 	var lastMessage = {};
+
 
 	// Listen event submit
 	if(show) {
@@ -86,7 +88,19 @@ function IASChat(config) {
 		name = config.name || '';
 		pic = config.pic || '';
 
-		setChatData();
+		// Get chat info
+		userRef = firebase.database().ref('users/' + cid);
+		userRef.on('value', function(data) {
+
+			user = data.val();
+
+			lastMessage = user.lastMessage;
+			// console.log(lastMessage);
+			
+			setChatData();
+			setNotifications();
+		});
+
 
 		clearMessages();
 
@@ -99,13 +113,7 @@ function IASChat(config) {
 
 	function setChatData() {
 
-		userRef = firebase.database().ref('users/' + cid);
-		userRef.on('value', function(data) {
-
-			var key = data.key;
-			var user = data.val();
-
-			lastMessage = user.lastMessage;
+		if(user) {
 
 			var printData = {
 				name: defaultSupportName,
@@ -124,8 +132,9 @@ function IASChat(config) {
 		
 			document.getElementById('ias_topbar-text').innerHTML = printData.name;
 			document.getElementById('ias_topbar-pic').firstChild.setAttribute('src', printData.pic);
-		});
-
+		} else {
+			setTimeout(setChatData, 100);
+		}
 	}
 
 
@@ -225,7 +234,7 @@ function IASChat(config) {
 		var text = e.srcElement.children[1].value
 
 		if(text === '' && attatchment === null) {
-			console.log('tried to send empty form. Rejected.');
+			console.warn('tried to send empty form. Rejected.');
 			return false;
 		}
 
@@ -325,33 +334,33 @@ function IASChat(config) {
 		} else {
 			printMessage(text, true);
 			
-			// If chat is open, set the message as read. Else, set a notification ;)
-			if(isHidden()) {
-				setNotifications()
-			} else {
+			// If chat is open, set the message as read
+			if(!isHidden()) {
 				readLastMessage();
 			}
 		}
 	}
 
 	function readLastMessage() {
-		console.log('IAS SHOWN, MARK LAST MESSAGE AS READ');
 		firebase.database().ref('users/' + cid + '/lastMessage').update({read: true});
-		setNotifications();
 	}
 
 	function setNotifications() {
-		if(lastMessage.uid !== uid && !lastMessage.read) {
-			if (showNotifications.classList) {
-				showNotifications.classList.remove('hidden');
+
+		// Only set notifications if button are enabled
+		if(button) {
+			if(lastMessage.uid !== uid && !lastMessage.read) {
+				if (showNotifications.classList) {
+					showNotifications.classList.remove('hidden');
+				} else {
+					showNotifications.className = showNotifications.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+				}
 			} else {
-				showNotifications.className = showNotifications.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-			}
-		} else {
-			if (showNotifications.classList) {
-				showNotifications.classList.add('hidden');
-			} else {
-				showNotifications.className += ' ' + 'hidden';
+				if (showNotifications.classList) {
+					showNotifications.classList.add('hidden');
+				} else {
+					showNotifications.className += ' ' + 'hidden';
+				}
 			}
 		}
 	}
