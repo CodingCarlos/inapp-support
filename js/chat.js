@@ -27,6 +27,7 @@ function IASChat(config) {
 
 	// Prepare listeners
 	var show = document.getElementById('ias-show');
+	var showNotifications = document.getElementById('ias-show-notifications');
 	var ias = document.getElementById('ias');
 	var topbar = document.getElementById('ias_topbar');
 	var close = document.getElementById('ias_topbar-close');
@@ -46,6 +47,8 @@ function IASChat(config) {
 
 	var lastHash = '';
 	var lastPage = '';
+
+	var lastMessage = {};
 
 	// Listen event submit
 	if(show) {
@@ -98,8 +101,11 @@ function IASChat(config) {
 
 		userRef = firebase.database().ref('users/' + cid);
 		userRef.on('value', function(data) {
+
 			var key = data.key;
 			var user = data.val();
+
+			lastMessage = user.lastMessage;
 
 			var printData = {
 				name: defaultSupportName,
@@ -278,6 +284,10 @@ function IASChat(config) {
 		firebase.database().ref('messages/' + cid).push(msg);
 
 		firebase.database().ref('users/' + cid).once('value').then(function(snapshot) {		
+			
+			var userLastMsg = msg;
+			userLastMsg.read = false;
+
 			if(!snapshot.val()) {
 				// Add user
 				firebase.database().ref('users/' + cid).set({
@@ -285,10 +295,10 @@ function IASChat(config) {
 					pic: pic,
 					isSupporter: false,
 					supporter: -1,
-					lastMessage: msg
+					lastMessage: userLastMsg
 				});
 			} else {
-				firebase.database().ref('users/' + cid).update({lastMessage: msg});
+				firebase.database().ref('users/' + cid).update({lastMessage: userLastMsg});
 				if(!snapshot.val().profile) {
 					generateUserData(cid)
 				}
@@ -314,6 +324,35 @@ function IASChat(config) {
 			printMessage(text);
 		} else {
 			printMessage(text, true);
+			
+			// If chat is open, set the message as read. Else, set a notification ;)
+			if(isHidden()) {
+				setNotifications()
+			} else {
+				readLastMessage();
+			}
+		}
+	}
+
+	function readLastMessage() {
+		console.log('IAS SHOWN, MARK LAST MESSAGE AS READ');
+		firebase.database().ref('users/' + cid + '/lastMessage').update({read: true});
+		setNotifications();
+	}
+
+	function setNotifications() {
+		if(lastMessage.uid !== uid && !lastMessage.read) {
+			if (showNotifications.classList) {
+				showNotifications.classList.remove('hidden');
+			} else {
+				showNotifications.className = showNotifications.className.replace(new RegExp('(^|\\b)' + 'hidden'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+			}
+		} else {
+			if (showNotifications.classList) {
+				showNotifications.classList.add('hidden');
+			} else {
+				showNotifications.className += ' ' + 'hidden';
+			}
 		}
 	}
 
@@ -338,6 +377,9 @@ function IASChat(config) {
 
 		// Also set url hash to true;
 		addUrlHash();
+
+		// And read last message
+		readLastMessage();
 	}
 
 	function hideIAS(e) {
@@ -353,6 +395,20 @@ function IASChat(config) {
 
 		// Also remove url hash to true;
 		remUrlHash();
+	}
+
+	function isHidden(e) {
+		if(typeof(e) !== 'undefined') {
+			e.preventDefault();
+		}
+
+		var className = 'hidden';
+
+		if (ias.classList) {
+			return ias.classList.contains(className);
+		} else {
+			return new RegExp('(^| )' + className + '( |$)', 'gi').test(ias.className);
+		}
 	}
 
 	/* ### URL Hash ### */
