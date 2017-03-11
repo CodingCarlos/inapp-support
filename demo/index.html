@@ -61,8 +61,22 @@
 			mainColor: '#ff9800',
 			textColor: '#fff',
 			defaultSupportName: 'John Doe',
-			defaultSupportPic: 'http://lorempixel.com/100/100/people'
+			defaultSupportPic: 'http://lorempixel.com/100/100/people',
+			onMessage: myFunction,
+			onSend: function(msg, key) {
+				console.log('Sent message. Id stored: ' + key);
+				console.log(msg)
+			}
 		});
+
+		function myFunction(message, key) {
+			console.log('--------------------');
+			console.log('- We got a message!');
+			console.log(message);
+			console.log('- key:');
+			console.log(key);
+			console.log('--------------------');
+		}
 	};
 	</script>	
 

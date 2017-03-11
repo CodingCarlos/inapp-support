@@ -21,6 +21,8 @@ function IASChat(config) {
 	var hashSign = config.hashSign || '?';
 	var uploadFiles = config.uploadFiles || true;
 	var onlyPictures = config.onlyPictures || true;
+	var onSend = config.onSend || null;
+	var onMessage = config.onMessage || null;
 
 	// Prepare interface
 	printInterface(container);
@@ -331,12 +333,19 @@ function IASChat(config) {
 
 		if(message.uid == uid) {
 			printMessage(text);
+			if(typeof onSend === 'function') {
+				onSend(message, key);
+			}
 		} else {
 			printMessage(text, true);
 			
 			// If chat is open, set the message as read
 			if(!isHidden()) {
 				readLastMessage();
+			}
+
+			if(typeof onMessage === 'function') {
+				onMessage(message, key);
 			}
 		}
 	}
