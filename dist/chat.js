@@ -80,7 +80,7 @@ function IASChat(config) {
 		open: showIAS,
 		uid: uid,
 		cid: cid
-	}
+	};
 
 	/* ### Set chat properties ### */
 
@@ -144,11 +144,11 @@ function IASChat(config) {
 
 	function printInterface() {
 		// Compressed version of html/chat.html turned to string
-		var ias = '<div id=\"ias\" class=\"hidden\"><div id=\"ias_topbar\"><div id=\"ias_topbar-pic\"><img src=\"https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg\"></div><div id=\"ias_topbar-text\">Support</div><div id=\"ias_topbar-close\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /><path d=\"M0 0h24v24H0z\" fill=\"none\" /></svg></div></div><div id=\"ias_messages\"></div><div id=\"ias_attachment\" class=\"hidden\"><span id=\"ias_attachment-close\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg></span><span id=\"ias_attachment-preview\"></span></div><div id=\"ias_write\"><form id=\"ias_write-form\"><span id=\"ias_write-attachment\"><svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg><input type=\"file\" id=\"ias_write-attachment-uploadFile\" /></span><input type=\"text\" /><button type=\"submit\"><svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M2.01 21L23 12 2.01 3 2 10l15 2-15 2z\" /><path d=\"M0 0h24v24H0z\" fill=\"none\" /></svg></button></form></div></div>'
+		var ias = '<div id=\"ias\" class=\"hidden\"><div id=\"ias_topbar\"><div id=\"ias_topbar-pic\"><img src=\"https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg\"></div><div id=\"ias_topbar-text\">Support</div><div id=\"ias_topbar-close\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /><path d=\"M0 0h24v24H0z\" fill=\"none\" /></svg></div></div><div id=\"ias_messages\"></div><div id=\"ias_attachment\" class=\"hidden\"><span id=\"ias_attachment-close\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg></span><span id=\"ias_attachment-preview\"></span></div><div id=\"ias_write\"><form id=\"ias_write-form\"><span id=\"ias_write-attachment\"><svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg><input type=\"file\" id=\"ias_write-attachment-uploadFile\" /></span><input type=\"text\" /><button type=\"submit\"><svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M2.01 21L23 12 2.01 3 2 10l15 2-15 2z\" /><path d=\"M0 0h24v24H0z\" fill=\"none\" /></svg></button></form></div></div>';
 
 		// If shall show button, add it to interface (from html/show-button.html)
 		if(button) {
-			ias += '<div id=\"ias-show\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M19 2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h4l3 3 3-3h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.9 13 12.5 13 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z\" /></svg><span id=\"ias-show-notifications\" class=\"hidden\"></span></div>'
+			ias += '<div id=\"ias-show\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M19 2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h4l3 3 3-3h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.9 13 12.5 13 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z\" /></svg><span id=\"ias-show-notifications\" class=\"hidden\"></span></div>';
 		}
 
 		// Also add the styles from css/style.css
@@ -233,7 +233,7 @@ function IASChat(config) {
 			e.preventDefault();
 		}
 
-		var text = e.srcElement.children[1].value
+		var text = e.srcElement.children[1].value;
 
 		if(text === '' && attatchment === null) {
 			console.warn('tried to send empty form. Rejected.');
@@ -263,7 +263,7 @@ function IASChat(config) {
 		var span = document.createElement('span');
 			span.innerHTML = text;
 
-		message.appendChild(span)
+		message.appendChild(span);
 		messages.appendChild(message);
 
 		scrollDown();
@@ -311,7 +311,7 @@ function IASChat(config) {
 			} else {
 				firebase.database().ref('users/' + cid).update({lastMessage: userLastMsg});
 				if(!snapshot.val().profile) {
-					generateUserData(cid)
+					generateUserData(cid);
 				}
 			}
 		});
@@ -451,7 +451,7 @@ function IASChat(config) {
 				window.location.hash += '#ias=true'; 
 			}
 
-			lastPage = window.location.href.split('#')[0]
+			lastPage = window.location.href.split('#')[0];
 
 			setTimeout(hashChange, 300);
 		}
@@ -514,7 +514,7 @@ function IASChat(config) {
         reader.onload = function (e) {
             // $('#blah').attr('src', e.target.result);
         	attatchmentPreview.innerHTML = '<img src="' + e.target.result + '">';
-        }
+        };
 
         reader.readAsDataURL(file);
 

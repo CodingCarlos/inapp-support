@@ -80,7 +80,7 @@ function IASChat(config) {
 		open: showIAS,
 		uid: uid,
 		cid: cid
-	}
+	};
 
 	/* ### Set chat properties ### */
 
@@ -144,11 +144,11 @@ function IASChat(config) {
 
 	function printInterface() {
 		// Compressed version of html/chat.html turned to string
-		var ias = '<%- data.ias %>'
+		var ias = '<%- data.ias %>';
 
 		// If shall show button, add it to interface (from html/show-button.html)
 		if(button) {
-			ias += '<%- data.iasSegment %>'
+			ias += '<%- data.iasSegment %>';
 		}
 
 		// Also add the styles from css/style.css
@@ -233,7 +233,7 @@ function IASChat(config) {
 			e.preventDefault();
 		}
 
-		var text = e.srcElement.children[1].value
+		var text = e.srcElement.children[1].value;
 
 		if(text === '' && attatchment === null) {
 			console.warn('tried to send empty form. Rejected.');
@@ -263,7 +263,7 @@ function IASChat(config) {
 		var span = document.createElement('span');
 			span.innerHTML = text;
 
-		message.appendChild(span)
+		message.appendChild(span);
 		messages.appendChild(message);
 
 		scrollDown();
@@ -311,7 +311,7 @@ function IASChat(config) {
 			} else {
 				firebase.database().ref('users/' + cid).update({lastMessage: userLastMsg});
 				if(!snapshot.val().profile) {
-					generateUserData(cid)
+					generateUserData(cid);
 				}
 			}
 		});
@@ -451,7 +451,7 @@ function IASChat(config) {
 				window.location.hash += '#ias=true'; 
 			}
 
-			lastPage = window.location.href.split('#')[0]
+			lastPage = window.location.href.split('#')[0];
 
 			setTimeout(hashChange, 300);
 		}
@@ -514,7 +514,7 @@ function IASChat(config) {
         reader.onload = function (e) {
             // $('#blah').attr('src', e.target.result);
         	attatchmentPreview.innerHTML = '<img src="' + e.target.result + '">';
-        }
+        };
 
         reader.readAsDataURL(file);
 
