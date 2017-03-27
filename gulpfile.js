@@ -10,13 +10,39 @@ runSequence = require('run-sequence'),
 templateHTML = require('./template/data'),
 browserSync = require('browser-sync').create();
 
-gulp.task('render', function(){
 
-        gulp.src(["./js/**.js", "!./js/firebase.js"])
-            .pipe(debug({title: 'Render Task:'}))
-            .pipe(ejs({data: templateHTML}))
-            .pipe(gulp.dest("./dist"));
-})
+gulp.task('clean', function() { 
+    gulp.src(['./build/*', './dist/*'])
+        .pipe(clean('./build'))
+        .pipe(clean('./dist'));
+});
+
+gulp.task('storage', function() { 
+    gulp.src('./js/storage/*.js')
+        .pipe(concat('storage-all.js'))
+        .pipe(gulp.dest('./build'));
+});
+
+gulp.task('render', function(){
+    gulp.src(["./js/**.js", "!./js/firebase.js"])
+        .pipe(debug({title: 'Render Task:'}))
+        .pipe(ejs({data: templateHTML}))
+        .pipe(gulp.dest("./build"));
+});
+
+gulp.task('bundle', ['storage', 'render'], function(){
+    gulp.src(["./build/storage-all.js", "./build/chat.js"])
+        .pipe(concat('chat.js'))
+        .pipe(gulp.dest("./dist"));
+
+    gulp.src(["./build/storage-all.js", "./build/chat.js", './build/provider.js'])
+        .pipe(concat('provider.js'))
+        .pipe(gulp.dest("./dist"));
+});
+
+
+gulp.task('build', ["storage", "render"]);
+
 /*
 gulp.task('dist-html', function(){
     gulp.src("./*.html")
@@ -49,4 +75,5 @@ gulp.task('move-to-dis', function(callback){
     );
 })
 */
-gulp.task('default', ["render"])
+
+// gulp.task('default', ["clean", "storage", "render", "bundle"]);

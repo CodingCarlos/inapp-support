@@ -31,6 +31,8 @@ function IASChat(config) {
 		onMessage: config.onMessage || null
 	};
 
+	settings.storage = Storage(settings, {type: 'firebase'});
+
 	// Prepare interface
 	printInterface(settings.container);
 
@@ -299,29 +301,31 @@ function IASChat(config) {
 			msg.img = img;
 		}
 
-		firebase.database().ref('messages/' + settings.cid).push(msg);
+		settings.storage.sendMessage(msg);
 
-		firebase.database().ref('users/' + settings.cid).once('value').then(function(snapshot) {		
+		// firebase.database().ref('messages/' + settings.cid).push(msg);
+
+		// firebase.database().ref('users/' + settings.cid).once('value').then(function(snapshot) {		
 			
-			var userLastMsg = msg;
-			userLastMsg.read = false;
+		// 	var userLastMsg = msg;
+		// 	userLastMsg.read = false;
 
-			if(!snapshot.val()) {
-				// Add user
-				firebase.database().ref('users/' + settings.cid).set({
-					name: settings.name,
-					pic: settings.pic,
-					isSupporter: false,
-					supporter: -1,
-					lastMessage: userLastMsg
-				});
-			} else {
-				firebase.database().ref('users/' + settings.cid).update({lastMessage: userLastMsg});
-				if(!snapshot.val().profile) {
-					generateUserData(settings.cid);
-				}
-			}
-		});
+		// 	if(!snapshot.val()) {
+		// 		// Add user
+		// 		firebase.database().ref('users/' + settings.cid).set({
+		// 			name: settings.name,
+		// 			pic: settings.pic,
+		// 			isSupporter: false,
+		// 			supporter: -1,
+		// 			lastMessage: userLastMsg
+		// 		});
+		// 	} else {
+		// 		firebase.database().ref('users/' + settings.cid).update({lastMessage: userLastMsg});
+		// 		if(!snapshot.val().profile) {
+		// 			generateUserData(settings.cid);
+		// 		}
+		// 	}
+		// });
 	}
 
 	function receiveMessage(data) {
