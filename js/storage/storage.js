@@ -1,4 +1,4 @@
-function Storage(iasSettings, props) {
+function Storage(iasSettings) {
 
 	var settings = iasSettings;
 	var constructor = {
@@ -17,8 +17,8 @@ function Storage(iasSettings, props) {
 		/* Storage types */
 		var types = ['firebase', 'ecserver'];
 
-		if(typeof props.type !== 'undefined' && types.indexOf(props.type.toLowerCase()) !== -1) {
-			constructor.type = props.type.toLowerCase();
+		if(typeof iasSettings.storageType !== 'undefined' && types.indexOf(iasSettings.storageType.toLowerCase()) !== -1) {
+			constructor.type = iasSettings.storageType.toLowerCase();
 		}
 	}
 
