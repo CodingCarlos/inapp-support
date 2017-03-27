@@ -2,30 +2,57 @@
 function IASChat(config) {
 
 	// ALSO ADD CHAT SETTINGS TO CONFIG
-	var cid;
-	var uid;
-	var name;
-	var pic;
-	var button = config.button || false;
 	var mainColor = config.mainColor || '#ff9800';
 	var textColor = config.textColor || '#ffffff';
-	var topbarBg = config.topbarBg || mainColor;
-	var topbarColor = config.topbarColor || textColor;
-	var buttonBg = config.buttonBg || mainColor;
-	var buttonColor = config.buttonColor || textColor;
-	var buttonIcon = config.buttonIcon || null;
-	var inputBorderColor = config.inputBorderColor || mainColor;
-	var defaultSupportName = config.defaultSupportName || 'Support chat';
-	var defaultSupportPic = config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
-	var container = config.container || null;
-	var hashSign = config.hashSign || '?';
-	var uploadFiles = config.uploadFiles || true;
-	var onlyPictures = config.onlyPictures || true;
-	var onSend = config.onSend || null;
-	var onMessage = config.onMessage || null;
+
+	var settings = {
+		cid: null,
+		uid: null,
+		name: null,
+		pic: null,
+		user: null,
+		lastMessage: null,
+		button: config.button || false,
+		mainColor: config.mainColor || '#ff9800',
+		textColor: config.textColor || '#ffffff',
+		topbarBg: config.topbarBg || mainColor,
+		topbarColor: config.topbarColor || textColor,
+		buttonBg: config.buttonBg || mainColor,
+		buttonColor: config.buttonColor || textColor,
+		buttonIcon: config.buttonIcon || null,
+		inputBorderColor: config.inputBorderColor || mainColor,
+		defaultSupportName: config.defaultSupportName || 'Support chat',
+		defaultSupportPic: config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg',
+		container: config.container || null,
+		hashSign: config.hashSign || '?',
+		uploadFiles: config.uploadFiles || true,
+		onlyPictures: config.onlyPictures || true,
+		onSend: config.onSend || null,
+		onMessage: config.onMessage || null
+	};
+
+	// var cid;
+	// var uid;
+	// var name;
+	// var pic;
+	// var button = config.button || false;
+	// var topbarBg = config.topbarBg || mainColor;
+	// var topbarColor = config.topbarColor || textColor;
+	// var buttonBg = config.buttonBg || mainColor;
+	// var buttonColor = config.buttonColor || textColor;
+	// var buttonIcon = config.buttonIcon || null;
+	// var inputBorderColor = config.inputBorderColor || mainColor;
+	// var defaultSupportName = config.defaultSupportName || 'Support chat';
+	// var defaultSupportPic = config.defaultSupportPic || 'https://s3.amazonaws.com/uifaces/faces/twitter/robertovivancos/128.jpg';
+	// var container = config.container || null;
+	// var hashSign = config.hashSign || '?';
+	// var uploadFiles = config.uploadFiles || true;
+	// var onlyPictures = config.onlyPictures || true;
+	// var onSend = config.onSend || null;
+	// var onMessage = config.onMessage || null;
 
 	// Prepare interface
-	printInterface(container);
+	printInterface(settings.container);
 
 	// Prepare listeners
 	var show = document.getElementById('ias-show');
@@ -57,7 +84,7 @@ function IASChat(config) {
 	// Listen event submit
 	if(show) {
 		show.addEventListener('click', showIAS.bind(this));
-	} else if(button) {
+	} else if(settings.button) {
 		console.warn('Coud not initializate listener for the button to open chat.');
 	}
 	close.addEventListener('click', hideIAS.bind(this));
@@ -78,25 +105,25 @@ function IASChat(config) {
 	return {
 		setUser: setUser,
 		open: showIAS,
-		uid: uid,
-		cid: cid
+		uid: settings.uid,
+		cid: settings.cid
 	};
 
 	/* ### Set chat properties ### */
 
 	function setUser(config) {
-		uid = config.uid;
-		cid = config.cid || config.uid;
-		name = config.name || '';
-		pic = config.pic || '';
+		settings.uid = config.uid;
+		settings.cid = config.cid || config.uid;
+		settings.name = config.name || '';
+		settings.pic = config.pic || '';
 
 		// Get chat info
-		userRef = firebase.database().ref('users/' + cid);
+		userRef = firebase.database().ref('users/' + settings.cid);
 		userRef.on('value', function(data) {
 
-			user = data.val();
+			settings.user = data.val();
 
-			lastMessage = user.lastMessage;
+			settings.lastMessage = settings.user.lastMessage;
 			// console.log(lastMessage);
 			
 			setChatData();
@@ -109,27 +136,27 @@ function IASChat(config) {
 		if(typeof(messagesRef) !== 'undefined') {
 			messagesRef.off();
 		}
-		messagesRef = firebase.database().ref('messages/' + cid);
+		messagesRef = firebase.database().ref('messages/' + settings.cid);
 		messagesRef.on('child_added', receiveMessage);
 	}
 
 	function setChatData() {
 
-		if(user) {
+		if(settings.user) {
 
 			var printData = {
-				name: defaultSupportName,
-				pic: defaultSupportPic
+				name: settings.defaultSupportName,
+				pic: settings.defaultSupportPic
 			};
 
-			if(uid == cid) {
-				if (user !== null && user.supporter != -1) {
-					printData.name = user.supporter.name;
-					printData.pic = user.supporter.pic;
+			if(settings.uid == settings.cid) {
+				if (settings.user !== null && settings.user.supporter != -1) {
+					printData.name = settings.user.supporter.name;
+					printData.pic = settings.user.supporter.pic;
 				}
 			} else {
-				printData.name = user.name;
-				printData.pic = user.pic;
+				printData.name = settings.user.name;
+				printData.pic = settings.user.pic;
 			}
 		
 			document.getElementById('ias_topbar-text').innerHTML = printData.name;
@@ -147,7 +174,7 @@ function IASChat(config) {
 		var ias = '<div id=\"ias\" class=\"hidden\"><div id=\"ias_topbar\"><div id=\"ias_topbar-pic\"><img src=\"https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg\"></div><div id=\"ias_topbar-text\">Support</div><div id=\"ias_topbar-close\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\" /><path d=\"M0 0h24v24H0z\" fill=\"none\" /></svg></div></div><div id=\"ias_messages\"></div><div id=\"ias_attachment\" class=\"hidden\"><span id=\"ias_attachment-close\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg></span><span id=\"ias_attachment-preview\"></span></div><div id=\"ias_write\"><form id=\"ias_write-form\"><span id=\"ias_write-attachment\"><svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg><input type=\"file\" id=\"ias_write-attachment-uploadFile\" /></span><input type=\"text\" /><button type=\"submit\"><svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"#000000\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M2.01 21L23 12 2.01 3 2 10l15 2-15 2z\" /><path d=\"M0 0h24v24H0z\" fill=\"none\" /></svg></button></form></div></div>';
 
 		// If shall show button, add it to interface (from html/show-button.html)
-		if(button) {
+		if(settings.button) {
 			ias += '<div id=\"ias-show\"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M19 2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h4l3 3 3-3h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.9 13 12.5 13 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z\" /></svg><span id=\"ias-show-notifications\" class=\"hidden\"></span></div>';
 		}
 
@@ -156,13 +183,13 @@ function IASChat(config) {
 
 		var printplace = null;
 
-		if(typeof(container) !== 'undefined' && container !== null) {
-			if(container.indexOf('#') !== -1) {
-				container = container.slice(1);
-				printplace = document.getElementById(container);
-			} else if(container.indexOf('.') !== -1) {
-				container = container.slice(1);
-				printplace = document.getElementsByClassName(container)[0];
+		if(typeof(settings.container) !== 'undefined' && settings.container !== null) {
+			if(settings.container.indexOf('#') !== -1) {
+				settings.container = settings.container.slice(1);
+				printplace = document.getElementById(settings.container);
+			} else if(settings.container.indexOf('.') !== -1) {
+				settings.container = settings.container.slice(1);
+				printplace = document.getElementsByClassName(settings.container)[0];
 			}
 		}
 
@@ -175,33 +202,33 @@ function IASChat(config) {
 
 	function customizeInterfaze() {
 		// Topbar
-		topbar.style.backgroundColor = topbarBg;
-		topbar.style.color = topbarColor;
-		topbar.style.fill = topbarColor;
+		topbar.style.backgroundColor = settings.topbarBg;
+		topbar.style.color = settings.topbarColor;
+		topbar.style.fill = settings.topbarColor;
 
 		// Open chat button
-		if(button) {
-			show.style.backgroundColor = buttonBg;
-			show.style.color = buttonColor;
-			show.style.fill = buttonColor;
+		if(settings.button) {
+			show.style.backgroundColor = settings.buttonBg;
+			show.style.color = settings.buttonColor;
+			show.style.fill = settings.buttonColor;
 		}
 
 		// Form colors
-		form.children[0].style.borderColor = inputBorderColor;
+		form.children[0].style.borderColor = settings.inputBorderColor;
 
 		// Upload form buttons
-		if(!uploadFiles) {
+		if(!settings.uploadFiles) {
 			form.children[0].style.display = 'none';
 			form.children[1].style.margin = '0 16px';
 			form.children[1].style.width = 'calc(100% - 88px)';
 		}
 
 		// If changed button icon
-		if(buttonIcon) {
+		if(settings.buttonIcon) {
 			var icon = document.createElement('img');
 			icon.style.width = '24px';
 			icon.style.height = '24px';
-			icon.setAttribute('src', buttonIcon);
+			icon.setAttribute('src', settings.buttonIcon);
 			document.getElementById('ias-show').removeChild(document.getElementById('ias-show').firstChild);
 			document.getElementById('ias-show').appendChild(icon);
 		}
@@ -282,7 +309,7 @@ function IASChat(config) {
 	function pushMessage(text, img) {
 
 		var msg = {
-			uid: uid,
+			uid: settings.uid,
 			text: text,
 			timestamp: new Date().getTime(),
 			reverseTimestamp: 0 - Number(new Date().getTime())
@@ -292,26 +319,26 @@ function IASChat(config) {
 			msg.img = img;
 		}
 
-		firebase.database().ref('messages/' + cid).push(msg);
+		firebase.database().ref('messages/' + settings.cid).push(msg);
 
-		firebase.database().ref('users/' + cid).once('value').then(function(snapshot) {		
+		firebase.database().ref('users/' + settings.cid).once('value').then(function(snapshot) {		
 			
 			var userLastMsg = msg;
 			userLastMsg.read = false;
 
 			if(!snapshot.val()) {
 				// Add user
-				firebase.database().ref('users/' + cid).set({
-					name: name,
-					pic: pic,
+				firebase.database().ref('users/' + settings.cid).set({
+					name: settings.name,
+					pic: settings.pic,
 					isSupporter: false,
 					supporter: -1,
 					lastMessage: userLastMsg
 				});
 			} else {
-				firebase.database().ref('users/' + cid).update({lastMessage: userLastMsg});
+				firebase.database().ref('users/' + settings.cid).update({lastMessage: userLastMsg});
 				if(!snapshot.val().profile) {
-					generateUserData(cid);
+					generateUserData(settings.cid);
 				}
 			}
 		});
@@ -331,7 +358,7 @@ function IASChat(config) {
 			}
 		}
 
-		if(message.uid == uid) {
+		if(message.uid == settings.uid) {
 			printMessage(text);
 			if(typeof onSend === 'function' && message.timestamp > lastMessage.timestamp) {
 				onSend(message, key);
@@ -351,14 +378,14 @@ function IASChat(config) {
 	}
 
 	function readLastMessage() {
-		firebase.database().ref('users/' + cid + '/lastMessage').update({read: true});
+		firebase.database().ref('users/' + settings.cid + '/lastMessage').update({read: true});
 	}
 
 	function setNotifications() {
 
 		// Only set notifications if button are enabled
-		if(button) {
-			if(lastMessage.uid !== uid && !lastMessage.read) {
+		if(settings.button) {
+			if(settings.lastMessage.uid !== settings.uid && !settings.lastMessage.read) {
 				if (showNotifications.classList) {
 					showNotifications.classList.remove('hidden');
 				} else {
@@ -445,7 +472,7 @@ function IASChat(config) {
 		if(!visibilityUrlHash()) {
 			if(window.location.hash) {
 				if(window.location.hash.indexOf('ias=true') === -1) {
-					window.location.hash +=  hashSign + 'ias=true'; 
+					window.location.hash +=  settings.hashSign + 'ias=true'; 
 				}
 			} else {
 				window.location.hash += '#ias=true'; 
@@ -460,11 +487,11 @@ function IASChat(config) {
 	function remUrlHash() {
 		if(window.location.hash) {
 
-			if(lastPage === window.location.href.split('#')[0] && (lastHash.indexOf( hashSign + 'ias=true') !== -1 || lastHash.indexOf('#ias=true') !== -1)) {
+			if(lastPage === window.location.href.split('#')[0] && (lastHash.indexOf( settings.hashSign + 'ias=true') !== -1 || lastHash.indexOf('#ias=true') !== -1)) {
 				window.history.back();
 			} else {
-				if(window.location.hash.indexOf( hashSign + 'ias=true') !== -1) {
-					window.location.hash = window.location.hash.replace( hashSign + 'ias=true', ''); 
+				if(window.location.hash.indexOf( settings.hashSign + 'ias=true') !== -1) {
+					window.location.hash = window.location.hash.replace( settings.hashSign + 'ias=true', ''); 
 				} else if(window.location.hash.indexOf('#ias=true') !== -1) {
 					window.location.hash = window.location.hash.replace('ias=true', ''); 
 				}
@@ -588,7 +615,7 @@ function IASChat(config) {
 		}
 
 		// Upload file and metadata to the object 'images/mountains.jpg'
-		var uploadTask = storageRef.child('images/' + uid + '/' + file.name).put(file, metadata);
+		var uploadTask = storageRef.child('images/' + settings.uid + '/' + file.name).put(file, metadata);
 
 		// Listen for state changes, errors, and completion of the upload.
 		uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
