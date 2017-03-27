@@ -3,10 +3,10 @@ function IASChatProvider(config) {
 
 	var uid = config.uid;
 	var name = config.name;
-	var pic = config.pic
+	var pic = config.pic;
 	var container = config.container;
-	var mainColor = config.mainColor || '#ff9800'
-	var textColor = config.textColor || '#fff'
+	var mainColor = config.mainColor || '#ff9800';
+	var textColor = config.textColor || '#fff';
 	var chat = new IASChat({
 		uid: uid,
 		name: name,
@@ -41,7 +41,7 @@ function IASChatProvider(config) {
 	firebase.database().ref('users')
 		.orderByChild('lastMessage/reverseTimestamp')
 		.on('value', function(snapshot) {
-			addUserList(snapshot)
+			addUserList(snapshot);
 		});
 
 
@@ -49,7 +49,7 @@ function IASChatProvider(config) {
 
 	function printInterface(container) {
 		// Compressed version of html/chat.html turned to string
-		var ias = '<%- data.iasProvider %>'
+		var ias = '<%- data.iasProvider %>';
 
 		// Also add the provider styles from css/provider-style.css
 		// ias += '<%- data.iasProviderStyle %>';
@@ -84,12 +84,12 @@ function IASChatProvider(config) {
 			var data = child.val();
 				data.uid = child.key;
 			
-			if(data.isSupporter == false) {
+			if(data.isSupporter === false) {
 				addUserToList(data);
 			}
 		});
 
-		if(usersChat[0].childElementCount == 0) {
+		if(usersChat[0].childElementCount === 0) {
 			unassignedChat.style.display = 'none';
 		} else {
 			unassignedChat.style.display = 'block';
@@ -144,7 +144,7 @@ function IASChatProvider(config) {
 	/* ### Open chats ### */
 
 	function usersChatManagement(event) {
-	    var event = event || window.event;
+	    event = event || window.event;
 	    var element = event.target || event.srcElement;
 
 	    // If the element clicked is not the main element, but a child
@@ -172,7 +172,7 @@ function IASChatProvider(config) {
 	        uid: uid
 	    }); 
 	    chat.open(event);
-	};
+	}
 
 
 	/* ### Set functions ### */
