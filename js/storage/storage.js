@@ -7,6 +7,7 @@ function Storage(iasSettings, props) {
 		getChat: null,
 		getUser: null,
 		saveUser: null,
+		readLastMessage: null,
 		upload: null,
 		storage: 'firebase'
 	};

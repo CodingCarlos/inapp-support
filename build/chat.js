@@ -100,10 +100,10 @@ function IASChat(config) {
 		settings.pic = config.pic || '';
 
 		// Get chat info
-		userRef = firebase.database().ref('users/' + settings.cid);
-		userRef.on('value', function(data) {
-
-			settings.user = data.val();
+		// userRef = firebase.database().ref('users/' + settings.cid);
+		// userRef.on('value', function(data) {
+		settings.storage.getUser(function(data) {
+			settings.user = data;
 
 			settings.lastMessage = settings.user.lastMessage;
 			// console.log(lastMessage);
@@ -115,11 +115,7 @@ function IASChat(config) {
 
 		clearMessages();
 
-		if(typeof(messagesRef) !== 'undefined') {
-			messagesRef.off();
-		}
-		messagesRef = firebase.database().ref('messages/' + settings.cid);
-		messagesRef.on('child_added', receiveMessage);
+		settings.storage.onMessage(receiveMessage);
 	}
 
 	function setChatData() {
@@ -328,9 +324,8 @@ function IASChat(config) {
 		// });
 	}
 
-	function receiveMessage(data) {
-		var key = data.key;
-		var message = data.val();
+	function receiveMessage(message, key) {
+
 		var text = message.text;
 
 		// Check if is a photo
@@ -362,7 +357,8 @@ function IASChat(config) {
 	}
 
 	function readLastMessage() {
-		firebase.database().ref('users/' + settings.cid + '/lastMessage').update({read: true});
+		// firebase.database().ref('users/' + settings.cid + '/lastMessage').update({read: true});
+		settings.storage.readLastMessage();
 	}
 
 	function setNotifications() {

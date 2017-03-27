@@ -30,7 +30,8 @@ gulp.task('render', function(){
         .pipe(gulp.dest("./build"));
 });
 
-gulp.task('bundle', ['storage', 'render'], function(){
+gulp.task('bundle', function(){
+// gulp.task('bundle', ['storage', 'render'], function(){
     gulp.src(["./build/storage-all.js", "./build/chat.js"])
         .pipe(concat('chat.js'))
         .pipe(gulp.dest("./dist"));

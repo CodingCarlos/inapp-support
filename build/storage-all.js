@@ -3,9 +3,13 @@ function FirebaseStorage(settings, storage) {
 	storage.sendMessage = sendMessage;
 	storage.onMessage = onMessage;
 	storage.getChat = getChat;
+	storage.getUser = getUser;
 	storage.saveUser = saveUser;
+	storage.readLastMessage = readLastMessage;
 
 	// var firebase = storage.server.firebase || window.firebase;
+	var messagesRef;
+	var userRef;
 
 	return storage;
 
@@ -39,20 +43,38 @@ function FirebaseStorage(settings, storage) {
 		});
 	}
 
-	function onMessage() {
-		console.warn('Not ready');
+	function onMessage(callback) {
+		if(typeof(messagesRef) !== 'undefined') {
+			messagesRef.off();
+		}
+		messagesRef = firebase.database().ref('messages/' + settings.cid);
+		messagesRef.on('child_added', function(data) {
+			if(typeof(callback) === 'function') {
+				callback(data.val(), data.key);
+			}
+		});
 	}
 
 	function getChat() {
 		console.warn('Not ready');
 	}
 
-	function getUser() {
-		console.warn('Not ready');
+	function getUser(callback) {
+		userRef = firebase.database().ref('users/' + settings.cid);
+		userRef.on('value', function(data) {
+			if(typeof(callback) === 'function') {
+				callback(data.val(), data.key);
+			}
+		});
 	}
 
 	function saveUser() {
 		console.warn('Not ready');
+	}
+
+	function readLastMessage() {
+		// console.warn('Not ready');
+		firebase.database().ref('users/' + settings.cid + '/lastMessage').update({read: true});
 	}
 
 }
@@ -66,6 +88,7 @@ function Storage(iasSettings, props) {
 		getChat: null,
 		getUser: null,
 		saveUser: null,
+		readLastMessage: null,
 		upload: null,
 		storage: 'firebase'
 	};
